@@ -105,7 +105,7 @@ const TetrisGame = () => {
       </div>
 
       {/* Main Game Area */}
-      <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
+      <div className="flex gap-2 md:gap-6 items-stretch flex-1 px-2 md:px-4">
         
         {/* Mobile: Hold + Stats left column */}
         <div className="flex flex-col gap-2 md:hidden w-16">
