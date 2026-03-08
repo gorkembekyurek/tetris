@@ -182,11 +182,30 @@ export function useTetris() {
     }
   }, [piece, board, nextPiece, lines, level, gameOver, paused]);
 
+  const hold = useCallback(() => {
+    if (gameOver || paused || !canHold) return;
+    setCanHold(false);
+    if (holdPiece) {
+      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
+      if (!collides(board, restored)) {
+        setHoldPiece({ shape: piece.shape, color: piece.color });
+        setPiece(restored);
+      }
+    } else {
+      setHoldPiece({ shape: piece.shape, color: piece.color });
+      const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
+      setPiece(np);
+      setNextPiece(randomPiece());
+    }
+  }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
+
   const restart = useCallback(() => {
     setBoard(createBoard());
     const p = randomPiece();
     setPiece(p);
     setNextPiece(randomPiece());
+    setHoldPiece(null);
+    setCanHold(true);
     setScore(0);
     setLines(0);
     setLevel(1);
