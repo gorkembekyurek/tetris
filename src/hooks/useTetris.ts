@@ -211,7 +211,7 @@ export function useTetris() {
       sounds.gameOver();
     } else {
       setPiece(np);
-      const newNext = randomPiece();
+      const newNext = drawPiece();
       setNextPiece(newNext);
       setPieceStats(s => ({ ...s, [np.type]: (s[np.type] || 0) + 1 }));
       setCanHold(true);
