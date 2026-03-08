@@ -113,11 +113,16 @@ export function useTetris() {
     setLines(newLines);
     setLevel(newLevel);
 
+    if (linesCleared > 0) sounds.lineClear(linesCleared);
+    else sounds.lock();
+    if (newLevel > level) sounds.levelUp();
+
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
     if (collides(cleared, np)) {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
+      sounds.gameOver();
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
