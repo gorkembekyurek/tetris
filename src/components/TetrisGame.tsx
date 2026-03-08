@@ -217,6 +217,7 @@ const TetrisGame = () => {
               <p>↑ Rotate</p>
               <p>↓ Soft drop</p>
               <p>Space Hard drop</p>
+              <p>C Hold</p>
               <p>P Pause</p>
             </div>
           </div>
