@@ -105,7 +105,7 @@ const TetrisGame = () => {
       </div>
 
       {/* Main Game Area */}
-      <div className="flex gap-2 md:gap-6 items-start justify-center flex-1 px-2 md:px-4">
+      <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
         
         {/* Mobile: Hold + Stats left column */}
         <div className="flex flex-col gap-2 md:hidden w-16">
@@ -126,25 +126,6 @@ const TetrisGame = () => {
               <div key={l as string}>
                 <p className="text-muted-foreground text-[6px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{l}</p>
                 <p className="text-accent text-[10px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{v}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Desktop Left Panel */}
-        <div className="hidden md:flex flex-col gap-4 w-32">
-          <div className={`bg-card rounded-lg p-3 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
-            <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
-            <div className="flex justify-center h-10 items-center">
-              {holdPiece ? <MiniPiece shape={holdPiece.shape} color={holdPiece.color} cellSize={18} /> : <p className="text-muted-foreground text-[8px]">C tuşu</p>}
-            </div>
-          </div>
-
-          <div className="bg-card rounded-lg p-3 border border-border space-y-3">
-            {[['SCORE', score], ['LINES', lines], ['LEVEL', level]].map(([label, value]) => (
-              <div key={label as string}>
-                <p className="text-muted-foreground text-[9px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{label}</p>
-                <p className="text-accent text-sm font-bold" style={{ fontFamily: 'var(--font-display)' }}>{value}</p>
               </div>
             ))}
           </div>
@@ -200,14 +181,32 @@ const TetrisGame = () => {
           )}
         </div>
 
-        {/* Desktop Right Panel */}
+        {/* Desktop Side Panel */}
         <div className="hidden md:flex flex-col gap-4 w-32">
+          <div className={`bg-card rounded-lg p-3 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
+            <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
+            <div className="flex justify-center h-10 items-center">
+              {holdPiece ? <MiniPiece shape={holdPiece.shape} color={holdPiece.color} cellSize={18} /> : <p className="text-muted-foreground text-[8px]">C tuşu</p>}
+            </div>
+          </div>
+
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>NEXT</p>
             <div className="flex justify-center">
               <MiniPiece shape={nextPiece.shape} color={nextPiece.color} cellSize={18} />
             </div>
           </div>
+
+          <div className="bg-card rounded-lg p-3 border border-border space-y-3">
+            {[['SCORE', score], ['LINES', lines], ['LEVEL', level]].map(([label, value]) => (
+              <div key={label as string}>
+                <p className="text-muted-foreground text-[9px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{label}</p>
+                <p className="text-accent text-sm font-bold" style={{ fontFamily: 'var(--font-display)' }}>{value}</p>
+              </div>
+            ))}
+          </div>
+
+
 
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
