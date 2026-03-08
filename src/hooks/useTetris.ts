@@ -416,7 +416,7 @@ export function useTetris() {
   return {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
-    combo, notifications,
+    combo, notifications, trail,
     pieces: PIECES,
     move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,
