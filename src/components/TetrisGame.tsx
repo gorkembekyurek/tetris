@@ -140,10 +140,10 @@ const TetrisGame = () => {
       <div className="flex gap-2 md:gap-8 items-start flex-1 px-2 md:px-4">
         
         {/* Desktop Left Panel - Keys + Settings */}
-        <div className="hidden md:flex flex-col gap-4 w-32">
-          <div className="bg-card rounded-lg p-3 border border-border">
-            <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
-            <div className="space-y-1 text-muted-foreground text-[10px]">
+        <div className="hidden md:flex flex-col gap-4 w-40">
+          <div className="bg-card rounded-lg p-4 border border-border">
+            <p className="text-muted-foreground text-[10px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
+            <div className="space-y-1.5 text-muted-foreground text-xs">
               <p>← → Move</p>
               <p>↑ Rotate</p>
               <p>↓ Soft drop</p>
