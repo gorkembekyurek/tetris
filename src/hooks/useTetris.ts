@@ -114,6 +114,7 @@ export function useTetris() {
     if (collides(cleared, np)) {
       setGameOver(true);
       setPiece(np);
+      saveHighScore(score + POINTS[linesCleared] * level);
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
