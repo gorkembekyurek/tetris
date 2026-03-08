@@ -50,3 +50,14 @@
     font-family: var(--font-body);
   }
 }
+
+@keyframes line-clear {
+  0% { background: hsl(var(--primary)); opacity: 1; }
+  30% { background: hsl(var(--accent)); opacity: 1; transform: scaleY(1.1); }
+  60% { background: hsl(var(--primary)); opacity: 0.8; }
+  100% { background: hsl(var(--accent)); opacity: 0; transform: scaleY(0); }
+}
+
+.animate-line-clear {
+  animation: line-clear 0.35s ease-out forwards;
+}

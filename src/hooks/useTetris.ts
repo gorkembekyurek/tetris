@@ -66,9 +66,16 @@ const merge = (board: Board, piece: Piece): Board => {
   return newBoard;
 };
 
-const clearLines = (board: Board): { board: Board; cleared: number } => {
-  const remaining = board.filter(row => row.some(cell => !cell));
-  const cleared = BOARD_HEIGHT - remaining.length;
+const findFullRows = (board: Board): number[] => {
+  return board.reduce<number[]>((acc, row, i) => {
+    if (row.every(cell => !!cell)) acc.push(i);
+    return acc;
+  }, []);
+};
+
+const removeRows = (board: Board, rows: number[]): { board: Board; cleared: number } => {
+  const remaining = board.filter((_, i) => !rows.includes(i));
+  const cleared = rows.length;
   const empty = Array.from({ length: cleared }, () => Array(BOARD_WIDTH).fill(null));
   return { board: [...empty, ...remaining], cleared };
 };
@@ -87,6 +94,7 @@ export function useTetris() {
   const [started, setStarted] = useState(false);
   const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string } | null>(null);
   const [canHold, setCanHold] = useState(true);
+  const [clearingRows, setClearingRows] = useState<number[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
     try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
   });
@@ -101,24 +109,16 @@ export function useTetris() {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const lockPiece = useCallback(() => {
-    const merged = merge(board, piece);
-    const { board: cleared, cleared: linesCleared } = clearLines(merged);
-    
+  const spawnNext = useCallback((currentBoard: Board, linesCleared: number) => {
     const newLines = lines + linesCleared;
     const newLevel = Math.floor(newLines / 10) + 1;
-    
-    setBoard(cleared);
     setScore(s => s + POINTS[linesCleared] * level);
     setLines(newLines);
     setLevel(newLevel);
-
-    if (linesCleared > 0) sounds.lineClear(linesCleared);
-    else sounds.lock();
     if (newLevel > level) sounds.levelUp();
 
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
-    if (collides(cleared, np)) {
+    if (collides(currentBoard, np)) {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
@@ -128,7 +128,32 @@ export function useTetris() {
       setNextPiece(randomPiece());
       setCanHold(true);
     }
-  }, [board, piece, nextPiece, lines, level]);
+  }, [nextPiece, lines, level, score, saveHighScore]);
+
+  const finalizeLock = useCallback((merged: Board) => {
+    const fullRows = findFullRows(merged);
+    if (fullRows.length > 0) {
+      sounds.lineClear(fullRows.length);
+      setClearingRows(fullRows);
+      setBoard(merged);
+      // After animation, actually remove rows
+      setTimeout(() => {
+        const { board: cleared, cleared: count } = removeRows(merged, fullRows);
+        setBoard(cleared);
+        setClearingRows([]);
+        spawnNext(cleared, count);
+      }, 350);
+    } else {
+      sounds.lock();
+      setBoard(merged);
+      spawnNext(merged, 0);
+    }
+  }, [spawnNext]);
+
+  const lockPiece = useCallback(() => {
+    const merged = merge(board, piece);
+    finalizeLock(merged);
+  }, [board, piece, finalizeLock]);
 
   const moveDown = useCallback(() => {
     if (gameOver || paused) return;
@@ -170,27 +195,8 @@ export function useTetris() {
     sounds.drop();
     setPiece(dropped);
     const merged = merge(board, dropped);
-    const { board: cleared, cleared: linesCleared } = clearLines(merged);
-    const newLines = lines + linesCleared;
-    const newLevel = Math.floor(newLines / 10) + 1;
-    setBoard(cleared);
-    setScore(s => s + POINTS[linesCleared] * level);
-    setLines(newLines);
-    setLevel(newLevel);
-    if (linesCleared > 0) sounds.lineClear(linesCleared);
-    if (newLevel > level) sounds.levelUp();
-    const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
-    if (collides(cleared, np)) {
-      setGameOver(true);
-      setPiece(np);
-      saveHighScore(score + POINTS[linesCleared] * level);
-      sounds.gameOver();
-    } else {
-      setPiece(np);
-      setNextPiece(randomPiece());
-      setCanHold(true);
-    }
-  }, [piece, board, nextPiece, lines, level, gameOver, paused]);
+    finalizeLock(merged);
+  }, [piece, board, gameOver, paused, finalizeLock]);
 
   const hold = useCallback(() => {
     if (gameOver || paused || !canHold) return;
@@ -266,7 +272,7 @@ export function useTetris() {
 
   return {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
-    gameOver, paused, started, highScores, canHold,
+    gameOver, paused, started, highScores, canHold, clearingRows,
     move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,
   };
