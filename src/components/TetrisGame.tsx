@@ -1,5 +1,6 @@
 import { useTetris } from '@/hooks/useTetris';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
+import { music } from '@/lib/sounds';
 
 const CELL_SIZE = 28;
 const BOARD_WIDTH = 10;
@@ -13,6 +14,25 @@ const TetrisGame = () => {
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
+
+  const toggleMusic = useCallback(() => {
+    if (musicOn) {
+      music.stop();
+      setMusicOn(false);
+    } else {
+      music.start();
+      setMusicOn(true);
+    }
+  }, [musicOn]);
+
+  // Stop music on game over
+  useEffect(() => {
+    if (gameOver && musicOn) {
+      music.stop();
+      setMusicOn(false);
+    }
+  }, [gameOver]);
 
   const touchRef = useRef<{ x: number; y: number } | null>(null);
 
