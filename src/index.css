@@ -317,15 +317,15 @@ html.diff-hard {
 
 /* Responsive board cells */
 .board-cell {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: 1px solid hsl(var(--border) / 0.3);
   transition: background-color 0.15s ease;
 }
 
 .board-grid {
-  width: calc(28px * 10);
-  height: calc(28px * 20);
+  width: calc(36px * 10);
+  height: calc(36px * 20);
 }
 
 @media (max-width: 768px) {
