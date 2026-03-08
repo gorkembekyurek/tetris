@@ -7,9 +7,9 @@ const BOARD_HEIGHT = 20;
 
 const TetrisGame = () => {
   const {
-    board, piece, ghost, nextPiece, score, lines, level,
-    gameOver, paused, started, highScores,
-    move, moveDown, rotatePiece, hardDrop, restart, start, togglePause,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    gameOver, paused, started, highScores, canHold,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
@@ -123,6 +123,29 @@ const TetrisGame = () => {
 
         {/* Side Panel */}
         <div className="flex flex-col gap-4 w-28 md:w-32">
+          {/* Hold Piece */}
+          <div className={`bg-card rounded-lg p-3 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
+            <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
+            <div className="flex justify-center h-10 items-center">
+              {holdPiece ? (
+                <div className="grid gap-0" style={{
+                  gridTemplateColumns: `repeat(${holdPiece.shape[0].length}, 18px)`,
+                }}>
+                  {holdPiece.shape.flat().map((cell, i) => (
+                    <div key={i} style={{
+                      width: 18, height: 18,
+                      background: cell ? holdPiece.color : 'transparent',
+                      boxShadow: cell ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)' : 'none',
+                      borderRadius: 2,
+                    }} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-[8px]">C tuşu</p>
+              )}
+            </div>
+          </div>
+
           {/* Next Piece */}
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>NEXT</p>
@@ -194,14 +217,16 @@ const TetrisGame = () => {
               <p>↑ Rotate</p>
               <p>↓ Soft drop</p>
               <p>Space Hard drop</p>
+              <p>C Hold</p>
               <p>P Pause</p>
             </div>
           </div>
 
           {/* Mobile Controls */}
           <div className="flex flex-col gap-2 md:hidden">
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-2">
               <button onClick={rotatePiece} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">↻</button>
+              <button onClick={hold} className="bg-muted text-foreground w-12 h-12 rounded-lg text-[9px] font-bold active:bg-primary active:text-primary-foreground" style={{ fontFamily: 'var(--font-display)' }}>HOLD</button>
             </div>
             <div className="flex justify-center gap-2">
               <button onClick={() => move(-1)} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">←</button>

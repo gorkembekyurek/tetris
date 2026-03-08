@@ -84,6 +84,8 @@ export function useTetris() {
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [started, setStarted] = useState(false);
+  const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string } | null>(null);
+  const [canHold, setCanHold] = useState(true);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
     try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
   });
@@ -118,6 +120,7 @@ export function useTetris() {
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
+      setCanHold(true);
     }
   }, [board, piece, nextPiece, lines, level]);
 
@@ -172,19 +175,37 @@ export function useTetris() {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
-      setGameOver(true);
-      setPiece(np);
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
+      setCanHold(true);
     }
   }, [piece, board, nextPiece, lines, level, gameOver, paused]);
+
+  const hold = useCallback(() => {
+    if (gameOver || paused || !canHold) return;
+    setCanHold(false);
+    if (holdPiece) {
+      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
+      if (!collides(board, restored)) {
+        setHoldPiece({ shape: piece.shape, color: piece.color });
+        setPiece(restored);
+      }
+    } else {
+      setHoldPiece({ shape: piece.shape, color: piece.color });
+      const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
+      setPiece(np);
+      setNextPiece(randomPiece());
+    }
+  }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
 
   const restart = useCallback(() => {
     setBoard(createBoard());
     const p = randomPiece();
     setPiece(p);
     setNextPiece(randomPiece());
+    setHoldPiece(null);
+    setCanHold(true);
     setScore(0);
     setLines(0);
     setLevel(1);
@@ -219,11 +240,12 @@ export function useTetris() {
         case 'ArrowUp': e.preventDefault(); rotatePiece(); break;
         case ' ': e.preventDefault(); hardDrop(); break;
         case 'p': case 'P': togglePause(); break;
+        case 'c': case 'C': hold(); break;
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [started, move, moveDown, rotatePiece, hardDrop, togglePause]);
+  }, [started, move, moveDown, rotatePiece, hardDrop, togglePause, hold]);
 
   // Ghost piece
   const ghost = (() => {
@@ -233,9 +255,9 @@ export function useTetris() {
   })();
 
   return {
-    board, piece, ghost, nextPiece, score, lines, level,
-    gameOver, paused, started, highScores,
-    move, moveDown, rotatePiece, hardDrop, restart, togglePause,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    gameOver, paused, started, highScores, canHold,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,
   };
 }
