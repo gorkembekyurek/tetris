@@ -9,7 +9,7 @@ const TetrisGame = () => {
   const {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
-    combo, notifications,
+    combo, notifications, trail,
     move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
   } = useTetris();
 
