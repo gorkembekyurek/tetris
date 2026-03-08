@@ -96,7 +96,7 @@ const TetrisGame = () => {
     }
   }
 
-  const MiniPiece = ({ shape, color, cellSize = 14 }: { shape: number[][]; color: string; cellSize?: number }) => (
+  const MiniPiece = ({ shape, color, cellSize = 18 }: { shape: number[][]; color: string; cellSize?: number }) => (
     <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${shape[0].length}, ${cellSize}px)` }}>
       {shape.flat().map((cell, i) => (
         <div key={i} style={{
