@@ -366,7 +366,7 @@ export function useTetris() {
       setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
       setPiece(np);
-      setNextPiece(randomPiece());
+      setNextPiece(drawPiece());
     }
   }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
 
