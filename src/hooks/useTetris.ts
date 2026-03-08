@@ -66,9 +66,16 @@ const merge = (board: Board, piece: Piece): Board => {
   return newBoard;
 };
 
-const clearLines = (board: Board): { board: Board; cleared: number } => {
-  const remaining = board.filter(row => row.some(cell => !cell));
-  const cleared = BOARD_HEIGHT - remaining.length;
+const findFullRows = (board: Board): number[] => {
+  return board.reduce<number[]>((acc, row, i) => {
+    if (row.every(cell => !!cell)) acc.push(i);
+    return acc;
+  }, []);
+};
+
+const removeRows = (board: Board, rows: number[]): { board: Board; cleared: number } => {
+  const remaining = board.filter((_, i) => !rows.includes(i));
+  const cleared = rows.length;
   const empty = Array.from({ length: cleared }, () => Array(BOARD_WIDTH).fill(null));
   return { board: [...empty, ...remaining], cleared };
 };
