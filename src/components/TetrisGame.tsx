@@ -29,6 +29,18 @@ const TetrisGame = () => {
     localStorage.setItem('tetris-theme', theme);
   }, [theme]);
 
+  // Apply difficulty theme class
+  useEffect(() => {
+    const el = document.documentElement;
+    el.classList.remove('diff-easy', 'diff-normal', 'diff-hard');
+    if (started) {
+      el.classList.add(`diff-${difficulty}`);
+    }
+    return () => {
+      el.classList.remove('diff-easy', 'diff-normal', 'diff-hard');
+    };
+  }, [difficulty, started]);
+
   const toggleTheme = useCallback(() => {
     setTheme(t => t === 'dark' ? 'light' : 'dark');
   }, []);
