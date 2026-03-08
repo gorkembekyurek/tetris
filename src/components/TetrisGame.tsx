@@ -234,8 +234,8 @@ const TetrisGame = () => {
             <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
               {musicOn ? '🔊' : '🔇'}
             </button>
-            <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-              {theme === 'dark' ? '☀️' : '🌙'}
+            <button onClick={cycleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+              {THEME_LABELS[theme]}<span className="text-[6px]" style={{ fontFamily: 'var(--font-display)' }}>{THEME_NAMES[theme].slice(0,3).toUpperCase()}</span>
             </button>
             <button
               onClick={() => {
