@@ -50,6 +50,12 @@ const TetrisGame = () => {
     }
   }, [gameOver]);
 
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
+
   // Render the display board with piece and ghost
   const displayBoard = board.map(row => [...row]);
 
