@@ -214,8 +214,15 @@ const TetrisGame = () => {
         </div>
 
         {/* Game Board - responsive cell size */}
-        <div className="relative rounded-lg overflow-hidden border-2 border-border"
+        <div className={`relative rounded-lg overflow-hidden border-2 border-border ${started && difficulty === 'hard' ? 'fire-border' : ''}`}
              style={{ boxShadow: '0 0 40px hsl(var(--tetris-glow) / 0.15), inset 0 0 20px hsl(230 25% 4% / 0.5)' }}>
+          {started && difficulty === 'hard' && (
+            <>
+              <div className="fire-overlay" />
+              <div className="fire-side-left" />
+              <div className="fire-side-right" />
+            </>
+          )}
           <div className="grid board-grid" style={{
             gridTemplateColumns: `repeat(${BOARD_WIDTH}, 1fr)`,
             gridTemplateRows: `repeat(${BOARD_HEIGHT}, 1fr)`,
