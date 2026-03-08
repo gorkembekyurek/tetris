@@ -200,32 +200,14 @@ const TetrisGame = () => {
           )}
         </div>
 
-        {/* Desktop Side Panel */}
+        {/* Desktop Right Panel */}
         <div className="hidden md:flex flex-col gap-4 w-32">
-          <div className={`bg-card rounded-lg p-3 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
-            <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
-            <div className="flex justify-center h-10 items-center">
-              {holdPiece ? <MiniPiece shape={holdPiece.shape} color={holdPiece.color} cellSize={18} /> : <p className="text-muted-foreground text-[8px]">C tuşu</p>}
-            </div>
-          </div>
-
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>NEXT</p>
             <div className="flex justify-center">
               <MiniPiece shape={nextPiece.shape} color={nextPiece.color} cellSize={18} />
             </div>
           </div>
-
-          <div className="bg-card rounded-lg p-3 border border-border space-y-3">
-            {[['SCORE', score], ['LINES', lines], ['LEVEL', level]].map(([label, value]) => (
-              <div key={label as string}>
-                <p className="text-muted-foreground text-[9px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{label}</p>
-                <p className="text-accent text-sm font-bold" style={{ fontFamily: 'var(--font-display)' }}>{value}</p>
-              </div>
-            ))}
-          </div>
-
-
 
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
