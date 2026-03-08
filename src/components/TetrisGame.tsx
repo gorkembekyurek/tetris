@@ -14,6 +14,18 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light');
+    localStorage.setItem('tetris-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  }, []);
 
   const toggleMusic = useCallback(() => {
     if (musicOn) {
@@ -87,6 +99,9 @@ const TetrisGame = () => {
         <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
           {musicOn ? '🔊' : '🔇'}
         </button>
+        <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
       </div>
 
       {/* Main Game Area */}
@@ -132,7 +147,7 @@ const TetrisGame = () => {
                     ? 'hsl(var(--primary))'
                     : cell === 'ghost'
                       ? `${piece.color}22`
-                      : cell || 'hsl(230, 20%, 10%)',
+                      : cell || 'hsl(var(--board-empty))',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
                     : cell && cell !== 'ghost'

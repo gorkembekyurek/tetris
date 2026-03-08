@@ -35,9 +35,34 @@
     --tetris-j: 220 70% 55%;
     --tetris-l: 25 90% 55%;
     --tetris-glow: 170 80% 50%;
+    --board-empty: 230 20% 10%;
 
     --font-display: 'Press Start 2P', monospace;
     --font-body: 'Inter', sans-serif;
+  }
+
+  .light {
+    --background: 210 30% 96%;
+    --foreground: 230 25% 12%;
+    --card: 210 25% 92%;
+    --card-foreground: 230 25% 12%;
+    --popover: 210 25% 92%;
+    --popover-foreground: 230 25% 12%;
+    --primary: 170 70% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 280 50% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 88%;
+    --muted-foreground: 230 10% 45%;
+    --accent: 40 95% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 82%;
+    --input: 210 20% 82%;
+    --ring: 170 70% 40%;
+    --tetris-glow: 170 70% 40%;
+    --board-empty: 210 15% 85%;
   }
 }
 
