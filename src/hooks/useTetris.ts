@@ -47,11 +47,21 @@ interface Piece {
 const createBoard = (): Board =>
   Array.from({ length: BOARD_HEIGHT }, () => Array(BOARD_WIDTH).fill(null));
 
-const randomPiece = (): Piece => {
-  const key = PIECE_KEYS[Math.floor(Math.random() * PIECE_KEYS.length)];
+const makePiece = (key: string): Piece => {
   const p = PIECES[key];
   return { shape: p.shape, color: p.color, type: key, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
 };
+
+// Shuffle array in place (Fisher-Yates)
+const shuffle = <T,>(arr: T[]): T[] => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
+const createBag = (): string[] => shuffle([...PIECE_KEYS]);
 
 const rotate = (shape: number[][]): number[][] => {
   const rows = shape.length, cols = shape[0].length;
