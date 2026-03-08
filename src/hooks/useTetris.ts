@@ -143,8 +143,7 @@ export function useTetris() {
   const move = useCallback((dx: number) => {
     if (gameOver || paused) return;
     const moved = { ...piece, x: piece.x + dx };
-    if (!collides(board, moved)) setPiece(moved);
-  }, [piece, board, gameOver, paused]);
+    if (!collides(board, moved)) { setPiece(moved); sounds.move(); }
 
   const rotatePiece = useCallback(() => {
     if (gameOver || paused) return;
