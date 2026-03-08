@@ -84,6 +84,17 @@ export function useTetris() {
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [started, setStarted] = useState(false);
+  const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
+    try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
+  });
+
+  const saveHighScore = useCallback((finalScore: number) => {
+    if (finalScore === 0) return;
+    const entry = { score: finalScore, date: new Date().toLocaleDateString('tr-TR') };
+    const updated = [...highScores, entry].sort((a, b) => b.score - a.score).slice(0, 10);
+    setHighScores(updated);
+    localStorage.setItem('tetris-highscores', JSON.stringify(updated));
+  }, [highScores]);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -103,6 +114,7 @@ export function useTetris() {
     if (collides(cleared, np)) {
       setGameOver(true);
       setPiece(np);
+      saveHighScore(score + POINTS[linesCleared] * level);
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
@@ -157,6 +169,9 @@ export function useTetris() {
     setLevel(newLevel);
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
     if (collides(cleared, np)) {
+      setGameOver(true);
+      setPiece(np);
+      saveHighScore(score + POINTS[linesCleared] * level);
       setGameOver(true);
       setPiece(np);
     } else {
@@ -219,7 +234,7 @@ export function useTetris() {
 
   return {
     board, piece, ghost, nextPiece, score, lines, level,
-    gameOver, paused, started,
+    gameOver, paused, started, highScores,
     move, moveDown, rotatePiece, hardDrop, restart, togglePause,
     start: restart,
   };

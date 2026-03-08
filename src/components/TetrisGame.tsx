@@ -1,5 +1,5 @@
 import { useTetris } from '@/hooks/useTetris';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const CELL_SIZE = 28;
 const BOARD_WIDTH = 10;
@@ -8,9 +8,11 @@ const BOARD_HEIGHT = 20;
 const TetrisGame = () => {
   const {
     board, piece, ghost, nextPiece, score, lines, level,
-    gameOver, paused, started,
+    gameOver, paused, started, highScores,
     move, moveDown, rotatePiece, hardDrop, restart, start, togglePause,
   } = useTetris();
+
+  const [showScores, setShowScores] = useState(false);
 
   const touchRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -152,6 +154,36 @@ const TetrisGame = () => {
                 <p className="text-accent text-sm font-bold" style={{ fontFamily: 'var(--font-display)' }}>{value}</p>
               </div>
             ))}
+          </div>
+
+          {/* High Scores */}
+          <div className="bg-card rounded-lg p-3 border border-border">
+            <button
+              onClick={() => setShowScores(s => !s)}
+              className="text-muted-foreground text-[9px] tracking-widest w-full text-left hover:text-foreground transition-colors"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              {showScores ? '▾ TOP 10' : '▸ TOP 10'}
+            </button>
+            {showScores && (
+              <div className="mt-2 space-y-1">
+                {highScores.length === 0 ? (
+                  <p className="text-muted-foreground text-[10px]">Henüz skor yok</p>
+                ) : (
+                  highScores.map((hs, i) => (
+                    <div key={i} className="flex justify-between items-center text-[10px]">
+                      <span className={i === 0 ? 'text-accent' : 'text-muted-foreground'}>
+                        {i + 1}.
+                      </span>
+                      <span className={i === 0 ? 'text-accent font-bold' : 'text-foreground'} style={{ fontFamily: 'var(--font-display)', fontSize: '9px' }}>
+                        {hs.score}
+                      </span>
+                      <span className="text-muted-foreground text-[8px]">{hs.date}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           {/* Controls */}
