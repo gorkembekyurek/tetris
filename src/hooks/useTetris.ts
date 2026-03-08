@@ -47,11 +47,21 @@ interface Piece {
 const createBoard = (): Board =>
   Array.from({ length: BOARD_HEIGHT }, () => Array(BOARD_WIDTH).fill(null));
 
-const randomPiece = (): Piece => {
-  const key = PIECE_KEYS[Math.floor(Math.random() * PIECE_KEYS.length)];
+const makePiece = (key: string): Piece => {
   const p = PIECES[key];
   return { shape: p.shape, color: p.color, type: key, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
 };
+
+// Shuffle array in place (Fisher-Yates)
+const shuffle = <T,>(arr: T[]): T[] => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
+const createBag = (): string[] => shuffle([...PIECE_KEYS]);
 
 const rotate = (shape: number[][]): number[][] => {
   const rows = shape.length, cols = shape[0].length;
@@ -133,9 +143,19 @@ const COMBO_BONUS = 50; // per combo level
 let notifId = 0;
 
 export function useTetris() {
+  const bagRef = useRef<string[]>(createBag());
+  
+  const drawPiece = useCallback((): Piece => {
+    if (bagRef.current.length === 0) {
+      bagRef.current = createBag();
+    }
+    const key = bagRef.current.pop()!;
+    return makePiece(key);
+  }, []);
+
   const [board, setBoard] = useState<Board>(createBoard);
-  const [piece, setPiece] = useState<Piece>(randomPiece);
-  const [nextPiece, setNextPiece] = useState<Piece>(randomPiece);
+  const [piece, setPiece] = useState<Piece>(() => drawPiece());
+  const [nextPiece, setNextPiece] = useState<Piece>(() => drawPiece());
   const [score, setScore] = useState(0);
   const [lines, setLines] = useState(0);
   const [level, setLevel] = useState(1);
@@ -191,7 +211,7 @@ export function useTetris() {
       sounds.gameOver();
     } else {
       setPiece(np);
-      const newNext = randomPiece();
+      const newNext = drawPiece();
       setNextPiece(newNext);
       setPieceStats(s => ({ ...s, [np.type]: (s[np.type] || 0) + 1 }));
       setCanHold(true);
@@ -346,15 +366,16 @@ export function useTetris() {
       setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
       setPiece(np);
-      setNextPiece(randomPiece());
+      setNextPiece(drawPiece());
     }
   }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
 
   const restart = useCallback(() => {
     setBoard(createBoard());
-    const p = randomPiece();
+    bagRef.current = createBag();
+    const p = drawPiece();
     setPiece(p);
-    setNextPiece(randomPiece());
+    setNextPiece(drawPiece());
     setHoldPiece(null);
     setCanHold(true);
     setScore(0);
