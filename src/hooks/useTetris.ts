@@ -234,6 +234,11 @@ export function useTetris() {
     setScore(0);
     setLines(0);
     setLevel(1);
+    setPieceStats(() => {
+      const stats = createPieceStats();
+      stats[p.type] = 1;
+      return stats;
+    });
     setGameOver(false);
     setPaused(false);
     setStarted(true);
