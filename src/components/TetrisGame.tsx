@@ -284,13 +284,22 @@ const TetrisGame = () => {
                 </p>
               )}
               {paused ? (
-                <button
-                  onClick={togglePause}
-                  className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  RESUME
-                </button>
+                <div className="flex flex-col gap-2 items-center">
+                  <button
+                    onClick={togglePause}
+                    className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    RESUME
+                  </button>
+                  <button
+                    onClick={restart}
+                    className="bg-muted text-muted-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:text-foreground hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    MAIN MENU
+                  </button>
+                </div>
               ) : (
                 <div className="flex flex-col gap-2 items-center">
                   <p className="text-muted-foreground text-[8px] md:text-[10px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
