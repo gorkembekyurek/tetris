@@ -293,6 +293,13 @@ const TetrisGame = () => {
                     RESUME
                   </button>
                   <button
+                    onClick={() => { togglePause(); restart(); startGame(difficulty); }}
+                    className="bg-accent text-accent-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    RESTART
+                  </button>
+                  <button
                     onClick={restart}
                     className="bg-muted text-muted-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:text-foreground hover:opacity-90 transition-opacity"
                     style={{ fontFamily: 'var(--font-display)' }}
