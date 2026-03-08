@@ -115,8 +115,8 @@ const TetrisGame = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen select-none">
-      {/* Header */}
-      <div className="flex items-center gap-3 py-3 md:py-4">
+      {/* Header - just TETRIS title */}
+      <div className="py-3 md:py-4">
         <h1 className="text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
           {'TETRIS'.split('').map((letter, i) => (
             <span key={i} style={{
@@ -125,48 +125,12 @@ const TetrisGame = () => {
             }}>{letter}</span>
           ))}
         </h1>
-        <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
-          {musicOn ? '🔊' : '🔇'}
-        </button>
-        <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-        <button
-          onClick={() => {
-            const next = (ghostLevel + 1) % 4;
-            setGhostLevel(next);
-            localStorage.setItem('tetris-ghost', String(next));
-          }}
-          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
-          title={`Hayalet: ${['Kapalı', 'Düşük', 'Orta', 'Yüksek'][ghostLevel]}`}
-        >
-          {['👻', '👻', '👻', '👻'][ghostLevel]}
-          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>
-            {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
-          </span>
-        </button>
-        <button
-          onClick={() => {
-            if (!document.fullscreenElement) {
-              document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-            } else {
-              document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-            }
-          }}
-          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
-          title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran'}
-        >
-          {isFullscreen ? '⛶' : '⛶'}
-          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)' }}>
-            {isFullscreen ? 'EXIT' : 'MAX'}
-          </span>
-        </button>
       </div>
 
       {/* Main Game Area */}
       <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
         
-        {/* Desktop Left Panel - Keys */}
+        {/* Desktop Left Panel - Keys + Settings */}
         <div className="hidden md:flex flex-col gap-4 w-32">
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
@@ -177,6 +141,47 @@ const TetrisGame = () => {
               <p>Space Hard drop</p>
               <p>C Hold</p>
               <p>P Pause</p>
+            </div>
+          </div>
+          <div className="bg-card rounded-lg p-3 border border-border">
+            <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>SETTINGS</p>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
+                {musicOn ? '🔊' : '🔇'}
+              </button>
+              <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
+              <button
+                onClick={() => {
+                  const next = (ghostLevel + 1) % 4;
+                  setGhostLevel(next);
+                  localStorage.setItem('tetris-ghost', String(next));
+                }}
+                className="text-muted-foreground hover:text-foreground transition-colors text-base"
+                title={`Hayalet: ${['Kapalı', 'Düşük', 'Orta', 'Yüksek'][ghostLevel]}`}
+              >
+                👻
+                <span className="text-[8px] ml-0.5" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>
+                  {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
+                </span>
+              </button>
+              <button
+                onClick={() => {
+                  if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+                  } else {
+                    document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+                  }
+                }}
+                className="text-muted-foreground hover:text-foreground transition-colors text-base"
+                title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran'}
+              >
+                ⛶
+                <span className="text-[8px] ml-0.5" style={{ fontFamily: 'var(--font-display)' }}>
+                  {isFullscreen ? 'EXIT' : 'MAX'}
+                </span>
+              </button>
             </div>
           </div>
         </div>
