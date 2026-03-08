@@ -417,10 +417,11 @@ export function useTetris() {
       if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
-    const speed = Math.max(100, 800 - (level - 1) * 70);
+    const config = DIFFICULTY_CONFIG[difficulty];
+    const speed = Math.max(100, config.baseSpeed - (level - 1) * config.speedStep);
     intervalRef.current = setInterval(moveDown, speed);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [started, gameOver, paused, level, moveDown]);
+  }, [started, gameOver, paused, level, moveDown, difficulty]);
 
   // Keyboard
   useEffect(() => {
