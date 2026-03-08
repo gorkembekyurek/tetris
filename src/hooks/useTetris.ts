@@ -98,7 +98,8 @@ export function useTetris() {
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [started, setStarted] = useState(false);
-  const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string } | null>(null);
+  const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string; type: string } | null>(null);
+  const [pieceStats, setPieceStats] = useState<PieceStats>(createPieceStats);
   const [canHold, setCanHold] = useState(true);
   const [clearingRows, setClearingRows] = useState<number[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
