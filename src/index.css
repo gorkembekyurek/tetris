@@ -98,6 +98,15 @@
   animation: notification-float 1.5s ease-out forwards;
 }
 
+@keyframes trail-fade {
+  0% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+.animate-trail {
+  animation: trail-fade 0.3s ease-out forwards;
+}
+
 /* Responsive board cells */
 .board-cell {
   width: 28px;

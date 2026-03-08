@@ -169,19 +169,25 @@ const TetrisGame = () => {
           }}>
             {displayBoard.flat().map((cell, i) => {
               const row = Math.floor(i / BOARD_WIDTH);
+              const col = i % BOARD_WIDTH;
               const isClearing = clearingRows.includes(row);
+              const trailCell = trail.find(t => t.row === row && t.col === col);
               return (
-                <div key={i} className={`board-cell ${isClearing ? 'animate-line-clear' : ''}`} style={{
+                <div key={i} className={`board-cell ${isClearing ? 'animate-line-clear' : ''} ${trailCell ? 'animate-trail' : ''}`} style={{
                   background: isClearing
                     ? 'hsl(var(--primary))'
-                    : cell === 'ghost'
-                      ? `${piece.color}22`
-                      : cell || 'hsl(var(--board-empty))',
+                    : trailCell && !cell
+                      ? `${trailCell.color}40`
+                      : cell === 'ghost'
+                        ? `${piece.color}22`
+                        : cell || 'hsl(var(--board-empty))',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
-                    : cell && cell !== 'ghost'
-                      ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
-                      : 'none',
+                    : trailCell && !cell
+                      ? `0 0 8px ${trailCell.color}60`
+                      : cell && cell !== 'ghost'
+                        ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
+                        : 'none',
                   borderColor: cell === 'ghost' ? `${piece.color}44` : isClearing ? 'transparent' : undefined,
                   border: isClearing ? 'none' : undefined,
                 }} />
