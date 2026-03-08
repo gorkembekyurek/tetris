@@ -156,8 +156,7 @@ const TetrisGame = () => {
                 ))}
               </div>
             </div>
-          )
-          </div>
+          )}
         </div>
 
         {/* Game Board - responsive cell size */}
