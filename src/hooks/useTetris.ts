@@ -450,11 +450,10 @@ export function useTetris() {
   })();
 
   return {
-    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level, difficulty,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
     combo, notifications, trail,
     pieces: PIECES,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
-    start: restart,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
   };
 }
