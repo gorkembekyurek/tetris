@@ -154,7 +154,7 @@ export function useTetris() {
       // wall kick
       for (const dx of [1, -1, 2, -2]) {
         const kicked = { ...rotated, x: rotated.x + dx };
-        if (!collides(board, kicked)) { setPiece(kicked); return; }
+        if (!collides(board, kicked)) { setPiece(kicked); sounds.rotate(); return; }
       }
     }
   }, [piece, board, gameOver, paused]);
