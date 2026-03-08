@@ -30,6 +30,12 @@ export interface ActionNotification {
   points?: number;
 }
 
+export interface TrailCell {
+  row: number;
+  col: number;
+  color: string;
+}
+
 interface Piece {
   shape: number[][];
   color: string;
