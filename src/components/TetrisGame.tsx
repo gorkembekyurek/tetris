@@ -47,8 +47,8 @@ const TetrisGame = () => {
     };
   }, [difficulty, started]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const cycleTheme = useCallback(() => {
+    setTheme(t => THEMES[(THEMES.indexOf(t) + 1) % THEMES.length]);
   }, []);
 
   const toggleMusic = useCallback(() => {
