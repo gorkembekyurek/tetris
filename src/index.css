@@ -190,48 +190,6 @@
     --board-empty: 0 15% 8%;
   }
 
-  /* Light mode difficulty overrides */
-  .light.diff-easy {
-    --background: 140 30% 95%;
-    --card: 140 25% 90%;
-    --muted: 140 20% 86%;
-    --muted-foreground: 140 10% 40%;
-    --border: 140 20% 80%;
-    --primary: 140 65% 35%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 80 75% 42%;
-    --accent-foreground: 0 0% 100%;
-    --tetris-glow: 140 65% 35%;
-    --board-empty: 140 15% 84%;
-  }
-
-  .light.diff-normal {
-    --background: 45 30% 95%;
-    --card: 45 25% 90%;
-    --muted: 45 20% 86%;
-    --muted-foreground: 40 10% 40%;
-    --border: 45 20% 80%;
-    --primary: 40 80% 42%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 35 90% 45%;
-    --accent-foreground: 0 0% 100%;
-    --tetris-glow: 40 80% 42%;
-    --board-empty: 45 15% 84%;
-  }
-
-  .light.diff-hard {
-    --background: 0 25% 95%;
-    --card: 0 20% 90%;
-    --muted: 0 15% 86%;
-    --muted-foreground: 0 10% 40%;
-    --border: 0 18% 80%;
-    --primary: 5 70% 45%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 25 90% 48%;
-    --accent-foreground: 0 0% 100%;
-    --tetris-glow: 5 70% 45%;
-    --board-empty: 0 12% 84%;
-  }
 }
 
 @layer base {
