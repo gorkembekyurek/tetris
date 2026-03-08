@@ -20,12 +20,18 @@ const TetrisGame = () => {
     const saved = localStorage.getItem('tetris-ghost');
     return saved ? parseInt(saved) : 2;
   }); // 0=off, 1=low, 2=medium, 3=high
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
+  const THEMES = ['default', 'retro', 'neon', 'minimal', 'pastel'] as const;
+  type Theme = typeof THEMES[number];
+  const THEME_LABELS: Record<Theme, string> = { default: '🌑', retro: '🎮', neon: '💜', minimal: '⬜', pastel: '🌸' };
+  const THEME_NAMES: Record<Theme, string> = { default: 'Dark', retro: 'Retro', neon: 'Neon', minimal: 'Minimal', pastel: 'Pastel' };
+  const [theme, setTheme] = useState<Theme>(() => {
+    return (localStorage.getItem('tetris-theme') as Theme) || 'default';
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
+    const el = document.documentElement;
+    THEMES.forEach(t => el.classList.remove(`theme-${t}`));
+    if (theme !== 'default') el.classList.add(`theme-${theme}`);
     localStorage.setItem('tetris-theme', theme);
   }, [theme]);
 
@@ -41,8 +47,8 @@ const TetrisGame = () => {
     };
   }, [difficulty, started]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const cycleTheme = useCallback(() => {
+    setTheme(t => THEMES[(THEMES.indexOf(t) + 1) % THEMES.length]);
   }, []);
 
   const toggleMusic = useCallback(() => {
@@ -151,8 +157,9 @@ const TetrisGame = () => {
               <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
                 {musicOn ? '🔊' : '🔇'}
               </button>
-              <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
-                {theme === 'dark' ? '☀️' : '🌙'}
+              <button onClick={cycleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={`Tema: ${THEME_NAMES[theme]}`}>
+                {THEME_LABELS[theme]}
+                <span className="text-[7px] ml-0.5" style={{ fontFamily: 'var(--font-display)' }}>{THEME_NAMES[theme].toUpperCase()}</span>
               </button>
               <button
                 onClick={() => {
@@ -227,8 +234,8 @@ const TetrisGame = () => {
             <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
               {musicOn ? '🔊' : '🔇'}
             </button>
-            <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-              {theme === 'dark' ? '☀️' : '🌙'}
+            <button onClick={cycleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+              {THEME_LABELS[theme]}<span className="text-[6px]" style={{ fontFamily: 'var(--font-display)' }}>{THEME_NAMES[theme].slice(0,3).toUpperCase()}</span>
             </button>
             <button
               onClick={() => {
