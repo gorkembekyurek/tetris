@@ -472,6 +472,6 @@ export function useTetris() {
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
     combo, notifications, trail,
     pieces: PIECES,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, goToMenu, startGame, togglePause,
   };
 }
