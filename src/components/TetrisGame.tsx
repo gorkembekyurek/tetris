@@ -9,6 +9,7 @@ const TetrisGame = () => {
   const {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
+    combo, notifications,
     move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
   } = useTetris();
 
@@ -186,6 +187,22 @@ const TetrisGame = () => {
                 }} />
               );
             })}
+          </div>
+
+          {/* Notifications overlay */}
+          <div className="absolute top-1/3 left-0 right-0 flex flex-col items-center pointer-events-none z-10">
+            {notifications.map(n => (
+              <div key={n.id} className="animate-notification-float text-center mb-1">
+                <p className="text-primary text-xs md:text-sm font-bold drop-shadow-lg" style={{ fontFamily: 'var(--font-display)', textShadow: '0 0 10px hsl(var(--primary) / 0.5)' }}>
+                  {n.text}
+                </p>
+                {n.points && (
+                  <p className="text-accent text-[10px] md:text-xs font-bold" style={{ fontFamily: 'var(--font-display)' }}>
+                    +{n.points}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
 
           {(!started || gameOver || paused) && (

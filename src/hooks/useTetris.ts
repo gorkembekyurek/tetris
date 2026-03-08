@@ -24,6 +24,12 @@ type PieceStats = Record<string, number>;
 const createPieceStats = (): PieceStats =>
   Object.fromEntries(PIECE_KEYS.map(k => [k, 0]));
 
+export interface ActionNotification {
+  id: number;
+  text: string;
+  points?: number;
+}
+
 interface Piece {
   shape: number[][];
   color: string;
@@ -86,7 +92,39 @@ const removeRows = (board: Board, rows: number[]): { board: Board; cleared: numb
   return { board: [...empty, ...remaining], cleared };
 };
 
+// T-Spin detection: check 3 of 4 corners around T piece center are filled
+const detectTSpin = (board: Board, piece: Piece): boolean => {
+  if (piece.type !== 'T') return false;
+  // Find the center of the T piece (the cell surrounded by others)
+  // T piece center is always at the intersection point
+  const centerY = piece.y + 1;
+  const centerX = piece.x + 1;
+  
+  if (centerY < 0 || centerY >= BOARD_HEIGHT || centerX < 0 || centerX >= BOARD_WIDTH) return false;
+  
+  // Check 4 diagonal corners around center
+  const corners = [
+    [centerY - 1, centerX - 1],
+    [centerY - 1, centerX + 1],
+    [centerY + 1, centerX - 1],
+    [centerY + 1, centerX + 1],
+  ];
+  
+  let filledCorners = 0;
+  for (const [cy, cx] of corners) {
+    if (cy < 0 || cy >= BOARD_HEIGHT || cx < 0 || cx >= BOARD_WIDTH || board[cy]?.[cx]) {
+      filledCorners++;
+    }
+  }
+  
+  return filledCorners >= 3;
+};
+
 const POINTS = [0, 100, 300, 500, 800];
+const TSPIN_POINTS = [400, 800, 1200, 1600]; // T-Spin + 0,1,2,3 lines
+const COMBO_BONUS = 50; // per combo level
+
+let notifId = 0;
 
 export function useTetris() {
   const [board, setBoard] = useState<Board>(createBoard);
@@ -102,9 +140,22 @@ export function useTetris() {
   const [pieceStats, setPieceStats] = useState<PieceStats>(createPieceStats);
   const [canHold, setCanHold] = useState(true);
   const [clearingRows, setClearingRows] = useState<number[]>([]);
+  const [combo, setCombo] = useState(-1); // -1 = no active combo
+  const [notifications, setNotifications] = useState<ActionNotification[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
     try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
   });
+  
+  // Track if last action was a rotation (for T-Spin detection)
+  const lastActionRef = useRef<'rotate' | 'move' | 'drop' | null>(null);
+
+  const addNotification = useCallback((text: string, points?: number) => {
+    const id = ++notifId;
+    setNotifications(prev => [...prev, { id, text, points }]);
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    }, 1500);
+  }, []);
 
   const saveHighScore = useCallback((finalScore: number) => {
     if (finalScore === 0) return;
@@ -116,10 +167,11 @@ export function useTetris() {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const spawnNext = useCallback((currentBoard: Board, linesCleared: number) => {
+  const spawnNext = useCallback((currentBoard: Board, linesCleared: number, bonusPoints: number) => {
     const newLines = lines + linesCleared;
     const newLevel = Math.floor(newLines / 10) + 1;
-    setScore(s => s + POINTS[linesCleared] * level);
+    const basePoints = POINTS[linesCleared] * level;
+    setScore(s => s + basePoints + bonusPoints);
     setLines(newLines);
     setLevel(newLevel);
     if (newLevel > level) sounds.levelUp();
@@ -128,7 +180,7 @@ export function useTetris() {
     if (collides(currentBoard, np)) {
       setGameOver(true);
       setPiece(np);
-      saveHighScore(score + POINTS[linesCleared] * level);
+      saveHighScore(score + basePoints + bonusPoints);
       sounds.gameOver();
     } else {
       setPiece(np);
@@ -139,29 +191,66 @@ export function useTetris() {
     }
   }, [nextPiece, lines, level, score, saveHighScore]);
 
-  const finalizeLock = useCallback((merged: Board) => {
+  const finalizeLock = useCallback((merged: Board, lockedPiece: Piece) => {
     const fullRows = findFullRows(merged);
+    const isTSpin = lastActionRef.current === 'rotate' && detectTSpin(merged, lockedPiece);
+    
     if (fullRows.length > 0) {
       sounds.lineClear(fullRows.length);
       setClearingRows(fullRows);
       setBoard(merged);
-      // After animation, actually remove rows
+      
+      // Calculate combo and T-Spin bonuses
+      const newCombo = combo + 1;
+      setCombo(newCombo);
+      
+      let bonusPoints = 0;
+      const notifs: { text: string; points?: number }[] = [];
+      
+      if (isTSpin) {
+        const tspinPts = TSPIN_POINTS[fullRows.length] * level;
+        bonusPoints += tspinPts;
+        notifs.push({ text: `T-SPIN ${fullRows.length > 0 ? (['', 'SINGLE', 'DOUBLE', 'TRIPLE'][fullRows.length]) : ''}`, points: tspinPts });
+      }
+      
+      if (newCombo > 0) {
+        const comboPts = COMBO_BONUS * newCombo * level;
+        bonusPoints += comboPts;
+        notifs.push({ text: `COMBO x${newCombo + 1}`, points: comboPts });
+      }
+      
+      if (fullRows.length === 4) {
+        notifs.push({ text: 'TETRIS!' });
+      }
+      
+      notifs.forEach(n => addNotification(n.text, n.points));
+      
       setTimeout(() => {
         const { board: cleared, cleared: count } = removeRows(merged, fullRows);
         setBoard(cleared);
         setClearingRows([]);
-        spawnNext(cleared, count);
+        spawnNext(cleared, count, bonusPoints);
       }, 350);
     } else {
-      sounds.lock();
-      setBoard(merged);
-      spawnNext(merged, 0);
+      if (isTSpin) {
+        const tspinPts = TSPIN_POINTS[0] * level;
+        addNotification('T-SPIN', tspinPts);
+        sounds.lock();
+        setBoard(merged);
+        setCombo(-1);
+        spawnNext(merged, 0, tspinPts);
+      } else {
+        sounds.lock();
+        setBoard(merged);
+        setCombo(-1);
+        spawnNext(merged, 0, 0);
+      }
     }
-  }, [spawnNext]);
+  }, [spawnNext, combo, addNotification]);
 
   const lockPiece = useCallback(() => {
     const merged = merge(board, piece);
-    finalizeLock(merged);
+    finalizeLock(merged, piece);
   }, [board, piece, finalizeLock]);
 
   const moveDown = useCallback(() => {
@@ -170,6 +259,7 @@ export function useTetris() {
     if (collides(board, moved)) {
       lockPiece();
     } else {
+      lastActionRef.current = 'move';
       setPiece(moved);
     }
   }, [piece, board, gameOver, paused, lockPiece]);
@@ -177,20 +267,29 @@ export function useTetris() {
   const move = useCallback((dx: number) => {
     if (gameOver || paused) return;
     const moved = { ...piece, x: piece.x + dx };
-    if (!collides(board, moved)) { setPiece(moved); sounds.move(); }
+    if (!collides(board, moved)) {
+      lastActionRef.current = 'move';
+      setPiece(moved);
+      sounds.move();
+    }
   }, [piece, board, gameOver, paused]);
 
   const rotatePiece = useCallback(() => {
     if (gameOver || paused) return;
     const rotated = { ...piece, shape: rotate(piece.shape) };
     if (!collides(board, rotated)) {
+      lastActionRef.current = 'rotate';
       setPiece(rotated);
       sounds.rotate();
     } else {
-      // wall kick
       for (const dx of [1, -1, 2, -2]) {
         const kicked = { ...rotated, x: rotated.x + dx };
-        if (!collides(board, kicked)) { setPiece(kicked); sounds.rotate(); return; }
+        if (!collides(board, kicked)) {
+          lastActionRef.current = 'rotate';
+          setPiece(kicked);
+          sounds.rotate();
+          return;
+        }
       }
     }
   }, [piece, board, gameOver, paused]);
@@ -202,22 +301,24 @@ export function useTetris() {
       dropped.y++;
     }
     sounds.drop();
+    // Don't change lastActionRef here — preserve rotate status for T-Spin
     setPiece(dropped);
     const merged = merge(board, dropped);
-    finalizeLock(merged);
+    finalizeLock(merged, dropped);
   }, [piece, board, gameOver, paused, finalizeLock]);
 
   const hold = useCallback(() => {
     if (gameOver || paused || !canHold) return;
     setCanHold(false);
+    lastActionRef.current = null;
     if (holdPiece) {
       const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, type: holdPiece.type, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
       if (!collides(board, restored)) {
+        setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
+        setPiece(restored);
+      }
+    } else {
       setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
-      setPiece(restored);
-    }
-  } else {
-    setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
       setPiece(np);
       setNextPiece(randomPiece());
@@ -234,6 +335,9 @@ export function useTetris() {
     setScore(0);
     setLines(0);
     setLevel(1);
+    setCombo(-1);
+    setNotifications([]);
+    lastActionRef.current = null;
     setPieceStats(() => {
       const stats = createPieceStats();
       stats[p.type] = 1;
@@ -287,6 +391,7 @@ export function useTetris() {
   return {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
+    combo, notifications,
     pieces: PIECES,
     move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,

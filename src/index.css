@@ -87,6 +87,17 @@
   animation: line-clear 0.35s ease-out forwards;
 }
 
+@keyframes notification-float {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  20% { opacity: 1; transform: translateY(0) scale(1.1); }
+  40% { transform: translateY(-5px) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+}
+
+.animate-notification-float {
+  animation: notification-float 1.5s ease-out forwards;
+}
+
 /* Responsive board cells */
 .board-cell {
   width: 28px;
