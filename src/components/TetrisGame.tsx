@@ -279,9 +279,25 @@ const TetrisGame = () => {
                 {gameOver ? 'GAME OVER' : paused ? 'PAUSED' : 'TETRIS'}
               </p>
               {gameOver && (
-                <p className="text-muted-foreground text-[10px] md:text-xs" style={{ fontFamily: 'var(--font-display)' }}>
-                  SCORE: {score}
-                </p>
+                <div className="flex flex-col gap-2 items-center">
+                  <p className="text-muted-foreground text-[10px] md:text-xs" style={{ fontFamily: 'var(--font-display)' }}>
+                    SCORE: {score}
+                  </p>
+                  <button
+                    onClick={() => startGame(difficulty)}
+                    className="bg-accent text-accent-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    RESTART
+                  </button>
+                  <button
+                    onClick={goToMenu}
+                    className="bg-muted text-muted-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:text-foreground hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    MAIN MENU
+                  </button>
+                </div>
               )}
               {paused ? (
                 <div className="flex flex-col gap-2 items-center">
