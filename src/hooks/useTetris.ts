@@ -94,6 +94,7 @@ export function useTetris() {
   const [started, setStarted] = useState(false);
   const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string } | null>(null);
   const [canHold, setCanHold] = useState(true);
+  const [clearingRows, setClearingRows] = useState<number[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
     try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
   });
