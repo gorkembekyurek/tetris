@@ -195,27 +195,8 @@ export function useTetris() {
     sounds.drop();
     setPiece(dropped);
     const merged = merge(board, dropped);
-    const { board: cleared, cleared: linesCleared } = clearLines(merged);
-    const newLines = lines + linesCleared;
-    const newLevel = Math.floor(newLines / 10) + 1;
-    setBoard(cleared);
-    setScore(s => s + POINTS[linesCleared] * level);
-    setLines(newLines);
-    setLevel(newLevel);
-    if (linesCleared > 0) sounds.lineClear(linesCleared);
-    if (newLevel > level) sounds.levelUp();
-    const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
-    if (collides(cleared, np)) {
-      setGameOver(true);
-      setPiece(np);
-      saveHighScore(score + POINTS[linesCleared] * level);
-      sounds.gameOver();
-    } else {
-      setPiece(np);
-      setNextPiece(randomPiece());
-      setCanHold(true);
-    }
-  }, [piece, board, nextPiece, lines, level, gameOver, paused]);
+    finalizeLock(merged);
+  }, [piece, board, gameOver, paused, finalizeLock]);
 
   const hold = useCallback(() => {
     if (gameOver || paused || !canHold) return;
