@@ -57,3 +57,81 @@ export const sounds = {
     });
   },
 };
+
+// Tetris Theme (Korobeiniki) - 8-bit style background music
+// Notes as [frequency, duration in beats]
+const THEME_NOTES: [number, number][] = [
+  // Line 1
+  [659, 1], [494, 0.5], [523, 0.5], [587, 1], [523, 0.5], [494, 0.5],
+  [440, 1], [440, 0.5], [523, 0.5], [659, 1], [587, 0.5], [523, 0.5],
+  [494, 1], [494, 0.5], [523, 0.5], [587, 1], [659, 1],
+  [523, 1], [440, 1], [440, 1], [0, 0.5],
+  // Line 2
+  [0, 0.5], [587, 1], [698, 0.5], [880, 1], [784, 0.5], [698, 0.5],
+  [659, 1.5], [523, 0.5], [659, 1], [587, 0.5], [523, 0.5],
+  [494, 1], [494, 0.5], [523, 0.5], [587, 1], [659, 1],
+  [523, 1], [440, 1], [440, 1], [0, 1],
+];
+
+class MusicPlayer {
+  private playing = false;
+  private timeoutIds: ReturnType<typeof setTimeout>[] = [];
+  private currentLoop: ReturnType<typeof setTimeout> | null = null;
+
+  start() {
+    if (this.playing) return;
+    this.playing = true;
+    this.playLoop();
+  }
+
+  stop() {
+    this.playing = false;
+    this.timeoutIds.forEach(clearTimeout);
+    this.timeoutIds = [];
+    if (this.currentLoop) clearTimeout(this.currentLoop);
+  }
+
+  get isPlaying() {
+    return this.playing;
+  }
+
+  private playLoop() {
+    if (!this.playing) return;
+    const bpm = 140;
+    const beatDuration = 60 / bpm;
+    let time = 0;
+
+    THEME_NOTES.forEach(([freq, beats]) => {
+      const duration = beats * beatDuration;
+      if (freq > 0) {
+        const id = setTimeout(() => {
+          if (!this.playing) return;
+          try {
+            const ctx = audioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.06, ctx.currentTime);
+            gain.gain.setValueAtTime(0.06, ctx.currentTime + duration * 0.8);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration * 0.95);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + duration * 0.95);
+          } catch {}
+        }, time * 1000);
+        this.timeoutIds.push(id);
+      }
+      time += duration;
+    });
+
+    // Loop
+    this.currentLoop = setTimeout(() => {
+      this.timeoutIds = [];
+      this.playLoop();
+    }, time * 1000);
+  }
+}
+
+export const music = new MusicPlayer();

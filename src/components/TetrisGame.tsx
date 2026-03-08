@@ -1,5 +1,6 @@
 import { useTetris } from '@/hooks/useTetris';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
+import { music } from '@/lib/sounds';
 
 const CELL_SIZE = 28;
 const BOARD_WIDTH = 10;
@@ -13,6 +14,25 @@ const TetrisGame = () => {
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
+
+  const toggleMusic = useCallback(() => {
+    if (musicOn) {
+      music.stop();
+      setMusicOn(false);
+    } else {
+      music.start();
+      setMusicOn(true);
+    }
+  }, [musicOn]);
+
+  // Stop music on game over
+  useEffect(() => {
+    if (gameOver && musicOn) {
+      music.stop();
+      setMusicOn(false);
+    }
+  }, [gameOver]);
 
   const touchRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -65,10 +85,19 @@ const TetrisGame = () => {
     <div className="flex flex-col items-center justify-center min-h-screen gap-4 select-none p-4"
          onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       
-      <h1 className="text-primary text-2xl md:text-3xl tracking-widest"
-          style={{ fontFamily: 'var(--font-display)' }}>
-        TETRIS
-      </h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-primary text-2xl md:text-3xl tracking-widest"
+            style={{ fontFamily: 'var(--font-display)' }}>
+          TETRIS
+        </h1>
+        <button
+          onClick={toggleMusic}
+          className="text-muted-foreground hover:text-foreground transition-colors text-lg"
+          title={musicOn ? 'Müziği kapat' : 'Müziği aç'}
+        >
+          {musicOn ? '🔊' : '🔇'}
+        </button>
+      </div>
 
       <div className="flex gap-4 md:gap-8 items-start">
         {/* Game Board */}
