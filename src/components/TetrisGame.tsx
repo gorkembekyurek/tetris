@@ -1,4 +1,4 @@
-import { useTetris } from '@/hooks/useTetris';
+import { useTetris, type Difficulty } from '@/hooks/useTetris';
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { music } from '@/lib/sounds';
 
