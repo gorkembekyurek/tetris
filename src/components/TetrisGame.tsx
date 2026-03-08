@@ -25,7 +25,8 @@ const TetrisGame = () => {
   const THEME_LABELS: Record<Theme, string> = { default: '🌑', retro: '🎮', neon: '💜', minimal: '⬜', pastel: '🌸' };
   const THEME_NAMES: Record<Theme, string> = { default: 'Dark', retro: 'Retro', neon: 'Neon', minimal: 'Minimal', pastel: 'Pastel' };
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem('tetris-theme') as Theme) || 'default';
+    const saved = localStorage.getItem('tetris-theme') as Theme;
+    return saved && THEMES.includes(saved) ? saved : 'default';
   });
 
   useEffect(() => {
