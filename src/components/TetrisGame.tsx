@@ -15,6 +15,10 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [ghostLevel, setGhostLevel] = useState<number>(() => {
+    const saved = localStorage.getItem('tetris-ghost');
+    return saved ? parseInt(saved) : 2;
+  }); // 0=off, 1=low, 2=medium, 3=high
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
   });
@@ -103,6 +107,20 @@ const TetrisGame = () => {
         <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
+        <button
+          onClick={() => {
+            const next = (ghostLevel + 1) % 4;
+            setGhostLevel(next);
+            localStorage.setItem('tetris-ghost', String(next));
+          }}
+          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
+          title={`Hayalet: ${['Kapalı', 'Düşük', 'Orta', 'Yüksek'][ghostLevel]}`}
+        >
+          {['👻', '👻', '👻', '👻'][ghostLevel]}
+          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>
+            {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
+          </span>
+        </button>
       </div>
 
       {/* Main Game Area */}
@@ -179,7 +197,7 @@ const TetrisGame = () => {
                     : trailCell && !cell
                       ? `${trailCell.color}40`
                       : cell === 'ghost'
-                        ? `${piece.color}22`
+                        ? (ghostLevel === 0 ? 'hsl(var(--board-empty))' : `${piece.color}${['00','15','30','55'][ghostLevel]}`)
                         : cell || 'hsl(var(--board-empty))',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
@@ -188,7 +206,7 @@ const TetrisGame = () => {
                       : cell && cell !== 'ghost'
                         ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
                         : 'none',
-                  borderColor: cell === 'ghost' ? `${piece.color}44` : isClearing ? 'transparent' : undefined,
+                  borderColor: cell === 'ghost' && ghostLevel > 0 ? `${piece.color}${['00','22','44','66'][ghostLevel]}` : isClearing ? 'transparent' : undefined,
                   border: isClearing ? 'none' : undefined,
                 }} />
               );
