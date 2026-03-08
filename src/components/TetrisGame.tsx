@@ -1,4 +1,4 @@
-import { useTetris } from '@/hooks/useTetris';
+import { useTetris, type Difficulty } from '@/hooks/useTetris';
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { music } from '@/lib/sounds';
 
@@ -7,10 +7,10 @@ const BOARD_HEIGHT = 20;
 
 const TetrisGame = () => {
   const {
-    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level, difficulty,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
     combo, notifications, trail,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
@@ -221,13 +221,37 @@ const TetrisGame = () => {
                   SCORE: {score}
                 </p>
               )}
-              <button
-                onClick={gameOver || !started ? restart : togglePause}
-                className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {gameOver ? 'RESTART' : paused ? 'RESUME' : 'START'}
-              </button>
+              {paused ? (
+                <button
+                  onClick={togglePause}
+                  className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  RESUME
+                </button>
+              ) : (
+                <div className="flex flex-col gap-2 items-center">
+                  <p className="text-muted-foreground text-[8px] md:text-[10px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
+                    DIFFICULTY
+                  </p>
+                  <div className="flex gap-2">
+                    {([
+                      { key: 'easy' as Difficulty, label: 'KOLAY', emoji: '🟢' },
+                      { key: 'normal' as Difficulty, label: 'ORTA', emoji: '🟡' },
+                      { key: 'hard' as Difficulty, label: 'ZOR', emoji: '🔴' },
+                    ]).map(d => (
+                      <button
+                        key={d.key}
+                        onClick={() => startGame(d.key)}
+                        className="bg-card border border-border hover:border-primary text-foreground px-3 py-2 rounded-md text-[8px] md:text-[10px] font-bold tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors"
+                        style={{ fontFamily: 'var(--font-display)' }}
+                      >
+                        {d.emoji} {d.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

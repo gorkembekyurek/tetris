@@ -142,6 +142,14 @@ const COMBO_BONUS = 50; // per combo level
 
 let notifId = 0;
 
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+const DIFFICULTY_CONFIG: Record<Difficulty, { startLevel: number; baseSpeed: number; speedStep: number }> = {
+  easy:   { startLevel: 1, baseSpeed: 900, speedStep: 50 },
+  normal: { startLevel: 1, baseSpeed: 800, speedStep: 70 },
+  hard:   { startLevel: 5, baseSpeed: 500, speedStep: 80 },
+};
+
 export function useTetris() {
   const bagRef = useRef<string[]>(createBag());
   
@@ -159,6 +167,7 @@ export function useTetris() {
   const [score, setScore] = useState(0);
   const [lines, setLines] = useState(0);
   const [level, setLevel] = useState(1);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [started, setStarted] = useState(false);
@@ -370,7 +379,7 @@ export function useTetris() {
     }
   }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
 
-  const restart = useCallback(() => {
+  const startGame = useCallback((diff: Difficulty = 'normal') => {
     setBoard(createBoard());
     bagRef.current = createBag();
     const p = drawPiece();
@@ -380,7 +389,8 @@ export function useTetris() {
     setCanHold(true);
     setScore(0);
     setLines(0);
-    setLevel(1);
+    setDifficulty(diff);
+    setLevel(DIFFICULTY_CONFIG[diff].startLevel);
     setCombo(-1);
     setNotifications([]);
     lastActionRef.current = null;
@@ -394,6 +404,10 @@ export function useTetris() {
     setStarted(true);
   }, []);
 
+  const restart = useCallback(() => {
+    startGame(difficulty);
+  }, [difficulty, startGame]);
+
   const togglePause = useCallback(() => {
     if (!gameOver) setPaused(p => !p);
   }, [gameOver]);
@@ -404,10 +418,11 @@ export function useTetris() {
       if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
-    const speed = Math.max(100, 800 - (level - 1) * 70);
+    const config = DIFFICULTY_CONFIG[difficulty];
+    const speed = Math.max(100, config.baseSpeed - (level - 1) * config.speedStep);
     intervalRef.current = setInterval(moveDown, speed);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [started, gameOver, paused, level, moveDown]);
+  }, [started, gameOver, paused, level, moveDown, difficulty]);
 
   // Keyboard
   useEffect(() => {
@@ -435,11 +450,10 @@ export function useTetris() {
   })();
 
   return {
-    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level, difficulty,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
     combo, notifications, trail,
     pieces: PIECES,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
-    start: restart,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
   };
 }
