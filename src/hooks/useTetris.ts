@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { sounds } from '@/lib/sounds';
 
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
@@ -112,11 +113,16 @@ export function useTetris() {
     setLines(newLines);
     setLevel(newLevel);
 
+    if (linesCleared > 0) sounds.lineClear(linesCleared);
+    else sounds.lock();
+    if (newLevel > level) sounds.levelUp();
+
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
     if (collides(cleared, np)) {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
+      sounds.gameOver();
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
@@ -137,7 +143,7 @@ export function useTetris() {
   const move = useCallback((dx: number) => {
     if (gameOver || paused) return;
     const moved = { ...piece, x: piece.x + dx };
-    if (!collides(board, moved)) setPiece(moved);
+    if (!collides(board, moved)) { setPiece(moved); sounds.move(); }
   }, [piece, board, gameOver, paused]);
 
   const rotatePiece = useCallback(() => {
@@ -145,11 +151,12 @@ export function useTetris() {
     const rotated = { ...piece, shape: rotate(piece.shape) };
     if (!collides(board, rotated)) {
       setPiece(rotated);
+      sounds.rotate();
     } else {
       // wall kick
       for (const dx of [1, -1, 2, -2]) {
         const kicked = { ...rotated, x: rotated.x + dx };
-        if (!collides(board, kicked)) { setPiece(kicked); return; }
+        if (!collides(board, kicked)) { setPiece(kicked); sounds.rotate(); return; }
       }
     }
   }, [piece, board, gameOver, paused]);
@@ -160,8 +167,8 @@ export function useTetris() {
     while (!collides(board, { ...dropped, y: dropped.y + 1 })) {
       dropped.y++;
     }
+    sounds.drop();
     setPiece(dropped);
-    // Lock immediately after setting
     const merged = merge(board, dropped);
     const { board: cleared, cleared: linesCleared } = clearLines(merged);
     const newLines = lines + linesCleared;
@@ -170,11 +177,14 @@ export function useTetris() {
     setScore(s => s + POINTS[linesCleared] * level);
     setLines(newLines);
     setLevel(newLevel);
+    if (linesCleared > 0) sounds.lineClear(linesCleared);
+    if (newLevel > level) sounds.levelUp();
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
     if (collides(cleared, np)) {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
+      sounds.gameOver();
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
