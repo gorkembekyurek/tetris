@@ -7,10 +7,10 @@ const BOARD_HEIGHT = 20;
 
 const TetrisGame = () => {
   const {
-    board, piece, ghost, nextPiece, holdPiece, score, lines, level,
+    board, piece, ghost, nextPiece, holdPiece, score, lines, level, difficulty,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
     combo, notifications, trail,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
