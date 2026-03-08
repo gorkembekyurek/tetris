@@ -8,7 +8,7 @@ const BOARD_HEIGHT = 20;
 const TetrisGame = () => {
   const {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
-    gameOver, paused, started, highScores, canHold, clearingRows,
+    gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
     move, moveDown, rotatePiece, hardDrop, hold, restart, start, togglePause,
   } = useTetris();
 
@@ -206,7 +206,19 @@ const TetrisGame = () => {
             ))}
           </div>
 
-
+          {started && (
+            <div className="bg-card rounded-lg p-3 border border-border">
+              <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>STATS</p>
+              <div className="space-y-1.5">
+                {Object.entries(pieceStats).map(([key, count]) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <MiniPiece shape={pieces[key].shape} color={pieces[key].color} cellSize={8} />
+                    <span className="text-foreground text-[10px] font-bold ml-auto" style={{ fontFamily: 'var(--font-display)' }}>{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>

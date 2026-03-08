@@ -19,9 +19,15 @@ const PIECES: Record<string, { shape: number[][]; color: string }> = {
 
 const PIECE_KEYS = Object.keys(PIECES);
 
+type PieceStats = Record<string, number>;
+
+const createPieceStats = (): PieceStats =>
+  Object.fromEntries(PIECE_KEYS.map(k => [k, 0]));
+
 interface Piece {
   shape: number[][];
   color: string;
+  type: string;
   x: number;
   y: number;
 }
@@ -32,7 +38,7 @@ const createBoard = (): Board =>
 const randomPiece = (): Piece => {
   const key = PIECE_KEYS[Math.floor(Math.random() * PIECE_KEYS.length)];
   const p = PIECES[key];
-  return { shape: p.shape, color: p.color, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
+  return { shape: p.shape, color: p.color, type: key, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
 };
 
 const rotate = (shape: number[][]): number[][] => {
@@ -92,7 +98,8 @@ export function useTetris() {
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [started, setStarted] = useState(false);
-  const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string } | null>(null);
+  const [holdPiece, setHoldPiece] = useState<{ shape: number[][]; color: string; type: string } | null>(null);
+  const [pieceStats, setPieceStats] = useState<PieceStats>(createPieceStats);
   const [canHold, setCanHold] = useState(true);
   const [clearingRows, setClearingRows] = useState<number[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
@@ -125,7 +132,9 @@ export function useTetris() {
       sounds.gameOver();
     } else {
       setPiece(np);
-      setNextPiece(randomPiece());
+      const newNext = randomPiece();
+      setNextPiece(newNext);
+      setPieceStats(s => ({ ...s, [np.type]: (s[np.type] || 0) + 1 }));
       setCanHold(true);
     }
   }, [nextPiece, lines, level, score, saveHighScore]);
@@ -202,13 +211,13 @@ export function useTetris() {
     if (gameOver || paused || !canHold) return;
     setCanHold(false);
     if (holdPiece) {
-      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
+      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, type: holdPiece.type, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
       if (!collides(board, restored)) {
-        setHoldPiece({ shape: piece.shape, color: piece.color });
-        setPiece(restored);
-      }
-    } else {
-      setHoldPiece({ shape: piece.shape, color: piece.color });
+      setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
+      setPiece(restored);
+    }
+  } else {
+    setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
       setPiece(np);
       setNextPiece(randomPiece());
@@ -225,6 +234,11 @@ export function useTetris() {
     setScore(0);
     setLines(0);
     setLevel(1);
+    setPieceStats(() => {
+      const stats = createPieceStats();
+      stats[p.type] = 1;
+      return stats;
+    });
     setGameOver(false);
     setPaused(false);
     setStarted(true);
@@ -272,7 +286,8 @@ export function useTetris() {
 
   return {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
-    gameOver, paused, started, highScores, canHold, clearingRows,
+    gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
+    pieces: PIECES,
     move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,
   };
