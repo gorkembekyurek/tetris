@@ -206,24 +206,7 @@ const TetrisGame = () => {
             ))}
           </div>
 
-          <div className="bg-card rounded-lg p-3 border border-border">
-            <button onClick={() => setShowScores(s => !s)} className="text-muted-foreground text-[9px] tracking-widest w-full text-left hover:text-foreground transition-colors" style={{ fontFamily: 'var(--font-display)' }}>
-              {showScores ? '▾ TOP 10' : '▸ TOP 10'}
-            </button>
-            {showScores && (
-              <div className="mt-2 space-y-1">
-                {highScores.length === 0 ? (
-                  <p className="text-muted-foreground text-[10px]">Henüz skor yok</p>
-                ) : highScores.map((hs, i) => (
-                  <div key={i} className="flex justify-between items-center text-[10px]">
-                    <span className={i === 0 ? 'text-accent' : 'text-muted-foreground'}>{i + 1}.</span>
-                    <span className={i === 0 ? 'text-accent font-bold' : 'text-foreground'} style={{ fontFamily: 'var(--font-display)', fontSize: '9px' }}>{hs.score}</span>
-                    <span className="text-muted-foreground text-[8px]">{hs.date}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+
 
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
