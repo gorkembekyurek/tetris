@@ -15,6 +15,7 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [ghostLevel, setGhostLevel] = useState<number>(() => {
     const saved = localStorage.getItem('tetris-ghost');
     return saved ? parseInt(saved) : 2;
