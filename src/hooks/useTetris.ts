@@ -19,9 +19,15 @@ const PIECES: Record<string, { shape: number[][]; color: string }> = {
 
 const PIECE_KEYS = Object.keys(PIECES);
 
+type PieceStats = Record<string, number>;
+
+const createPieceStats = (): PieceStats =>
+  Object.fromEntries(PIECE_KEYS.map(k => [k, 0]));
+
 interface Piece {
   shape: number[][];
   color: string;
+  type: string;
   x: number;
   y: number;
 }
