@@ -99,6 +99,9 @@ const TetrisGame = () => {
         <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
           {musicOn ? '🔊' : '🔇'}
         </button>
+        <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
       </div>
 
       {/* Main Game Area */}
