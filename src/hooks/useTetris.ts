@@ -378,7 +378,7 @@ export function useTetris() {
     }
   }, [gameOver, paused, canHold, holdPiece, piece, nextPiece, board]);
 
-  const restart = useCallback(() => {
+  const startGame = useCallback((diff: Difficulty = 'normal') => {
     setBoard(createBoard());
     bagRef.current = createBag();
     const p = drawPiece();
@@ -388,7 +388,8 @@ export function useTetris() {
     setCanHold(true);
     setScore(0);
     setLines(0);
-    setLevel(1);
+    setDifficulty(diff);
+    setLevel(DIFFICULTY_CONFIG[diff].startLevel);
     setCombo(-1);
     setNotifications([]);
     lastActionRef.current = null;
@@ -401,6 +402,10 @@ export function useTetris() {
     setPaused(false);
     setStarted(true);
   }, []);
+
+  const restart = useCallback(() => {
+    startGame(difficulty);
+  }, [difficulty, startGame]);
 
   const togglePause = useCallback(() => {
     if (!gameOver) setPaused(p => !p);
