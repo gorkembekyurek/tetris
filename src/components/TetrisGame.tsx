@@ -221,6 +221,24 @@ const TetrisGame = () => {
               </div>
             </div>
           )}
+          <div className="bg-card rounded-lg p-2 border border-border flex flex-wrap gap-1.5 justify-center">
+            <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+              {musicOn ? '🔊' : '🔇'}
+            </button>
+            <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <button
+              onClick={() => {
+                const next = (ghostLevel + 1) % 4;
+                setGhostLevel(next);
+                localStorage.setItem('tetris-ghost', String(next));
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              👻<span className="text-[6px]" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>{['OFF','LO','MD','HI'][ghostLevel]}</span>
+            </button>
+          </div>
         </div>
 
         {/* Game Board - responsive cell size */}
