@@ -10,7 +10,7 @@ const TetrisGame = () => {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level, difficulty,
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats, pieces,
     combo, notifications, trail,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, goToMenu, startGame, togglePause,
   } = useTetris();
 
   const [showScores, setShowScores] = useState(false);
@@ -300,7 +300,7 @@ const TetrisGame = () => {
                     RESTART
                   </button>
                   <button
-                    onClick={restart}
+                    onClick={goToMenu}
                     className="bg-muted text-muted-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:text-foreground hover:opacity-90 transition-opacity"
                     style={{ fontFamily: 'var(--font-display)' }}
                   >

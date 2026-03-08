@@ -409,6 +409,23 @@ export function useTetris() {
     startGame(difficulty);
   }, [difficulty, startGame]);
 
+  const goToMenu = useCallback(() => {
+    setStarted(false);
+    setGameOver(false);
+    setPaused(false);
+    setBoard(createBoard());
+    setScore(0);
+    setLines(0);
+    setLevel(1);
+    setCombo(-1);
+    setHoldPiece(null);
+    setCanHold(true);
+    setClearingRows([]);
+    setNotifications([]);
+    setTrail([]);
+    setPieceStats(createPieceStats());
+  }, []);
+
   const togglePause = useCallback(() => {
     if (!gameOver) setPaused(p => !p);
   }, [gameOver]);
@@ -455,6 +472,6 @@ export function useTetris() {
     gameOver, paused, started, highScores, canHold, clearingRows, pieceStats,
     combo, notifications, trail,
     pieces: PIECES,
-    move, moveDown, rotatePiece, hardDrop, hold, restart, startGame, togglePause,
+    move, moveDown, rotatePiece, hardDrop, hold, restart, goToMenu, startGame, togglePause,
   };
 }
