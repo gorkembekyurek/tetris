@@ -109,24 +109,16 @@ export function useTetris() {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const lockPiece = useCallback(() => {
-    const merged = merge(board, piece);
-    const { board: cleared, cleared: linesCleared } = clearLines(merged);
-    
+  const spawnNext = useCallback((currentBoard: Board, linesCleared: number) => {
     const newLines = lines + linesCleared;
     const newLevel = Math.floor(newLines / 10) + 1;
-    
-    setBoard(cleared);
     setScore(s => s + POINTS[linesCleared] * level);
     setLines(newLines);
     setLevel(newLevel);
-
-    if (linesCleared > 0) sounds.lineClear(linesCleared);
-    else sounds.lock();
     if (newLevel > level) sounds.levelUp();
 
     const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
-    if (collides(cleared, np)) {
+    if (collides(currentBoard, np)) {
       setGameOver(true);
       setPiece(np);
       saveHighScore(score + POINTS[linesCleared] * level);
@@ -136,7 +128,32 @@ export function useTetris() {
       setNextPiece(randomPiece());
       setCanHold(true);
     }
-  }, [board, piece, nextPiece, lines, level]);
+  }, [nextPiece, lines, level, score, saveHighScore]);
+
+  const finalizeLock = useCallback((merged: Board) => {
+    const fullRows = findFullRows(merged);
+    if (fullRows.length > 0) {
+      sounds.lineClear(fullRows.length);
+      setClearingRows(fullRows);
+      setBoard(merged);
+      // After animation, actually remove rows
+      setTimeout(() => {
+        const { board: cleared, cleared: count } = removeRows(merged, fullRows);
+        setBoard(cleared);
+        setClearingRows([]);
+        spawnNext(cleared, count);
+      }, 350);
+    } else {
+      sounds.lock();
+      setBoard(merged);
+      spawnNext(merged, 0);
+    }
+  }, [spawnNext]);
+
+  const lockPiece = useCallback(() => {
+    const merged = merge(board, piece);
+    finalizeLock(merged);
+  }, [board, piece, finalizeLock]);
 
   const moveDown = useCallback(() => {
     if (gameOver || paused) return;
