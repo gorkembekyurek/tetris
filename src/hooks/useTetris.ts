@@ -144,6 +144,7 @@ export function useTetris() {
     if (gameOver || paused) return;
     const moved = { ...piece, x: piece.x + dx };
     if (!collides(board, moved)) { setPiece(moved); sounds.move(); }
+  }, [piece, board, gameOver, paused]);
 
   const rotatePiece = useCallback(() => {
     if (gameOver || paused) return;
@@ -151,6 +152,7 @@ export function useTetris() {
     if (!collides(board, rotated)) {
       setPiece(rotated);
       sounds.rotate();
+    } else {
       // wall kick
       for (const dx of [1, -1, 2, -2]) {
         const kicked = { ...rotated, x: rotated.x + dx };
