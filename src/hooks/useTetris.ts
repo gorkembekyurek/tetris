@@ -150,7 +150,7 @@ export function useTetris() {
     const rotated = { ...piece, shape: rotate(piece.shape) };
     if (!collides(board, rotated)) {
       setPiece(rotated);
-    } else {
+      sounds.rotate();
       // wall kick
       for (const dx of [1, -1, 2, -2]) {
         const kicked = { ...rotated, x: rotated.x + dx };
