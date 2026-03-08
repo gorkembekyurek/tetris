@@ -303,12 +303,30 @@ export function useTetris() {
 
   const hardDrop = useCallback(() => {
     if (gameOver || paused) return;
+    const startY = piece.y;
     let dropped = { ...piece };
     while (!collides(board, { ...dropped, y: dropped.y + 1 })) {
       dropped.y++;
     }
     sounds.drop();
-    // Don't change lastActionRef here — preserve rotate status for T-Spin
+    
+    // Generate trail cells from start to drop position
+    if (dropped.y > startY) {
+      const trailCells: TrailCell[] = [];
+      for (let r = 0; r < piece.shape.length; r++) {
+        for (let c = 0; c < piece.shape[r].length; c++) {
+          if (!piece.shape[r][c]) continue;
+          for (let ty = startY + r; ty < dropped.y + r; ty++) {
+            if (ty >= 0 && ty < BOARD_HEIGHT) {
+              trailCells.push({ row: ty, col: piece.x + c, color: piece.color });
+            }
+          }
+        }
+      }
+      setTrail(trailCells);
+      setTimeout(() => setTrail([]), 300);
+    }
+    
     setPiece(dropped);
     const merged = merge(board, dropped);
     finalizeLock(merged, dropped);
