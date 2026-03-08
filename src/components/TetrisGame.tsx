@@ -235,17 +235,8 @@ const TetrisGame = () => {
             </div>
           )}
 
-          <div className="bg-card rounded-lg p-3 border border-border">
-            <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
-            <div className="space-y-1 text-muted-foreground text-[10px]">
-              <p>← → Move</p>
-              <p>↑ Rotate</p>
-              <p>↓ Soft drop</p>
-              <p>Space Hard drop</p>
-              <p>C Hold</p>
-              <p>P Pause</p>
-            </div>
-          </div>
+
+
         </div>
       </div>
 
