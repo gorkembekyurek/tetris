@@ -372,9 +372,10 @@ export function useTetris() {
 
   const restart = useCallback(() => {
     setBoard(createBoard());
-    const p = randomPiece();
+    bagRef.current = createBag();
+    const p = drawPiece();
     setPiece(p);
-    setNextPiece(randomPiece());
+    setNextPiece(drawPiece());
     setHoldPiece(null);
     setCanHold(true);
     setScore(0);
