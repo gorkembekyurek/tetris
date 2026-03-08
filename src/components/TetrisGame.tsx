@@ -122,6 +122,22 @@ const TetrisGame = () => {
             {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
           </span>
         </button>
+        <button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+            } else {
+              document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+            }
+          }}
+          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
+          title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran'}
+        >
+          {isFullscreen ? '⛶' : '⛶'}
+          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)' }}>
+            {isFullscreen ? 'EXIT' : 'MAX'}
+          </span>
+        </button>
       </div>
 
       {/* Main Game Area */}
