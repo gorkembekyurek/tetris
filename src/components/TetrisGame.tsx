@@ -107,6 +107,20 @@ const TetrisGame = () => {
         <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={theme === 'dark' ? 'Aydınlık tema' : 'Karanlık tema'}>
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
+        <button
+          onClick={() => {
+            const next = (ghostLevel + 1) % 4;
+            setGhostLevel(next);
+            localStorage.setItem('tetris-ghost', String(next));
+          }}
+          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
+          title={`Hayalet: ${['Kapalı', 'Düşük', 'Orta', 'Yüksek'][ghostLevel]}`}
+        >
+          {['👻', '👻', '👻', '👻'][ghostLevel]}
+          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>
+            {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
+          </span>
+        </button>
       </div>
 
       {/* Main Game Area */}
