@@ -119,9 +119,11 @@ const TetrisGame = () => {
       <div className="py-3 md:py-4">
         <h1 className="text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
           {'TETRIS'.split('').map((letter, i) => (
-            <span key={i} style={{
+            <span key={i} className="inline-block animate-tetris-drop" style={{
               color: ['#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138'][i],
               textShadow: `0 0 10px ${['#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138'][i]}80`,
+              animationDelay: `${i * 0.15}s`,
+              animationFillMode: 'both',
             }}>{letter}</span>
           ))}
         </h1>
