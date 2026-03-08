@@ -38,7 +38,7 @@ const createBoard = (): Board =>
 const randomPiece = (): Piece => {
   const key = PIECE_KEYS[Math.floor(Math.random() * PIECE_KEYS.length)];
   const p = PIECES[key];
-  return { shape: p.shape, color: p.color, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
+  return { shape: p.shape, color: p.color, type: key, x: Math.floor((BOARD_WIDTH - p.shape[0].length) / 2), y: 0 };
 };
 
 const rotate = (shape: number[][]): number[][] => {
