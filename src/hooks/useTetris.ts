@@ -241,6 +241,7 @@ export function useTetris() {
         case 'ArrowUp': e.preventDefault(); rotatePiece(); break;
         case ' ': e.preventDefault(); hardDrop(); break;
         case 'p': case 'P': togglePause(); break;
+        case 'c': case 'C': hold(); break;
       }
     };
     window.addEventListener('keydown', handler);
