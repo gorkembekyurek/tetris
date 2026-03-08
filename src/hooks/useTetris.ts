@@ -213,11 +213,11 @@ export function useTetris() {
     if (holdPiece) {
       const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
       if (!collides(board, restored)) {
-        setHoldPiece({ shape: piece.shape, color: piece.color });
-        setPiece(restored);
-      }
-    } else {
-      setHoldPiece({ shape: piece.shape, color: piece.color });
+      setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
+      setPiece(restored);
+    }
+  } else {
+    setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       const np = { ...nextPiece, x: Math.floor((BOARD_WIDTH - nextPiece.shape[0].length) / 2), y: 0 };
       setPiece(np);
       setNextPiece(randomPiece());
