@@ -319,3 +319,34 @@
     height: calc(18px * 20);
   }
 }
+
+@keyframes tetris-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) rotate(-10deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) rotate(2deg);
+  }
+  80% {
+    transform: translateY(-2px) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes tetris-glow-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.4);
+  }
+}
+
+.animate-tetris-drop {
+  animation: tetris-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), tetris-glow-pulse 2s ease-in-out infinite 1s;
+}
