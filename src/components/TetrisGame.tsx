@@ -15,6 +15,10 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [ghostLevel, setGhostLevel] = useState<number>(() => {
+    const saved = localStorage.getItem('tetris-ghost');
+    return saved ? parseInt(saved) : 2;
+  }); // 0=off, 1=low, 2=medium, 3=high
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
   });
