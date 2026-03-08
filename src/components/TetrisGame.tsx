@@ -152,8 +152,8 @@ const TetrisGame = () => {
               <p>P Pause</p>
             </div>
           </div>
-          <div className="bg-card rounded-lg p-3 border border-border">
-            <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>SETTINGS</p>
+          <div className="bg-card rounded-lg p-4 border border-border">
+            <p className="text-muted-foreground text-[10px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>SETTINGS</p>
             <div className="flex flex-wrap gap-2">
               <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
                 {musicOn ? '🔊' : '🔇'}
