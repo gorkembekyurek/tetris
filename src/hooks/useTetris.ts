@@ -272,7 +272,7 @@ export function useTetris() {
 
   return {
     board, piece, ghost, nextPiece, holdPiece, score, lines, level,
-    gameOver, paused, started, highScores, canHold,
+    gameOver, paused, started, highScores, canHold, clearingRows,
     move, moveDown, rotatePiece, hardDrop, hold, restart, togglePause,
     start: restart,
   };
