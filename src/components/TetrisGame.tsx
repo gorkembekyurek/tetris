@@ -137,7 +137,7 @@ const TetrisGame = () => {
       </div>
 
       {/* Main Game Area */}
-      <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
+      <div className="flex gap-2 md:gap-8 items-start flex-1 px-2 md:px-4">
         
         {/* Desktop Left Panel - Keys + Settings */}
         <div className="hidden md:flex flex-col gap-4 w-32">
