@@ -117,8 +117,13 @@ const TetrisGame = () => {
     <div className="flex flex-col items-center min-h-screen select-none">
       {/* Header */}
       <div className="flex items-center gap-3 py-3 md:py-4">
-        <h1 className="text-primary text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
-          TETRIS
+        <h1 className="text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
+          {'TETRIS'.split('').map((letter, i) => (
+            <span key={i} style={{
+              color: ['#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138'][i],
+              textShadow: `0 0 10px ${['#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138'][i]}80`,
+            }}>{letter}</span>
+          ))}
         </h1>
         <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
           {musicOn ? '🔊' : '🔇'}
