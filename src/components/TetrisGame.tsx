@@ -224,8 +224,9 @@ const TetrisGame = () => {
 
           {/* Mobile Controls */}
           <div className="flex flex-col gap-2 md:hidden">
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-2">
               <button onClick={rotatePiece} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">↻</button>
+              <button onClick={hold} className="bg-muted text-foreground w-12 h-12 rounded-lg text-[9px] font-bold active:bg-primary active:text-primary-foreground" style={{ fontFamily: 'var(--font-display)' }}>HOLD</button>
             </div>
             <div className="flex justify-center gap-2">
               <button onClick={() => move(-1)} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">←</button>
