@@ -39,157 +39,152 @@
 
     --font-display: 'Press Start 2P', monospace;
     --font-body: 'Inter', sans-serif;
-  }
+}
 
-  /* Theme: Retro / Gameboy */
-  .theme-retro {
-    --background: 80 30% 12%;
-    --foreground: 80 20% 75%;
-    --card: 80 25% 16%;
-    --card-foreground: 80 20% 75%;
-    --popover: 80 25% 16%;
-    --popover-foreground: 80 20% 75%;
-    --primary: 80 50% 45%;
-    --primary-foreground: 80 30% 8%;
-    --secondary: 80 30% 35%;
-    --secondary-foreground: 80 20% 85%;
-    --muted: 80 20% 20%;
-    --muted-foreground: 80 15% 50%;
-    --accent: 80 60% 55%;
-    --accent-foreground: 80 30% 8%;
-    --destructive: 0 50% 45%;
-    --destructive-foreground: 80 20% 85%;
-    --border: 80 15% 25%;
-    --input: 80 15% 25%;
-    --ring: 80 50% 45%;
-    --tetris-glow: 80 50% 45%;
-    --board-empty: 80 20% 14%;
-  }
+/* Visual themes - outside @layer for higher specificity */
+html.theme-retro {
+  --background: 80 30% 12%;
+  --foreground: 80 20% 75%;
+  --card: 80 25% 16%;
+  --card-foreground: 80 20% 75%;
+  --popover: 80 25% 16%;
+  --popover-foreground: 80 20% 75%;
+  --primary: 80 50% 45%;
+  --primary-foreground: 80 30% 8%;
+  --secondary: 80 30% 35%;
+  --secondary-foreground: 80 20% 85%;
+  --muted: 80 20% 20%;
+  --muted-foreground: 80 15% 50%;
+  --accent: 80 60% 55%;
+  --accent-foreground: 80 30% 8%;
+  --destructive: 0 50% 45%;
+  --destructive-foreground: 80 20% 85%;
+  --border: 80 15% 25%;
+  --input: 80 15% 25%;
+  --ring: 80 50% 45%;
+  --tetris-glow: 80 50% 45%;
+  --board-empty: 80 20% 14%;
+}
 
-  /* Theme: Neon / Cyberpunk */
-  .theme-neon {
-    --background: 260 40% 5%;
-    --foreground: 180 100% 80%;
-    --card: 260 35% 9%;
-    --card-foreground: 180 100% 80%;
-    --popover: 260 35% 9%;
-    --popover-foreground: 180 100% 80%;
-    --primary: 320 100% 55%;
-    --primary-foreground: 260 40% 5%;
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 260 40% 5%;
-    --muted: 260 25% 14%;
-    --muted-foreground: 260 20% 50%;
-    --accent: 50 100% 55%;
-    --accent-foreground: 260 40% 5%;
-    --destructive: 0 100% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 280 40% 20%;
-    --input: 280 40% 20%;
-    --ring: 320 100% 55%;
-    --tetris-glow: 320 100% 55%;
-    --board-empty: 260 30% 7%;
-  }
+html.theme-neon {
+  --background: 260 40% 5%;
+  --foreground: 180 100% 80%;
+  --card: 260 35% 9%;
+  --card-foreground: 180 100% 80%;
+  --popover: 260 35% 9%;
+  --popover-foreground: 180 100% 80%;
+  --primary: 320 100% 55%;
+  --primary-foreground: 260 40% 5%;
+  --secondary: 180 100% 50%;
+  --secondary-foreground: 260 40% 5%;
+  --muted: 260 25% 14%;
+  --muted-foreground: 260 20% 50%;
+  --accent: 50 100% 55%;
+  --accent-foreground: 260 40% 5%;
+  --destructive: 0 100% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 280 40% 20%;
+  --input: 280 40% 20%;
+  --ring: 320 100% 55%;
+  --tetris-glow: 320 100% 55%;
+  --board-empty: 260 30% 7%;
+}
 
-  /* Theme: Minimal / Sade */
-  .theme-minimal {
-    --background: 0 0% 97%;
-    --foreground: 0 0% 15%;
-    --card: 0 0% 93%;
-    --card-foreground: 0 0% 15%;
-    --popover: 0 0% 93%;
-    --popover-foreground: 0 0% 15%;
-    --primary: 0 0% 20%;
-    --primary-foreground: 0 0% 97%;
-    --secondary: 0 0% 75%;
-    --secondary-foreground: 0 0% 15%;
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 0 0% 35%;
-    --accent-foreground: 0 0% 97%;
-    --destructive: 0 60% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 82%;
-    --input: 0 0% 82%;
-    --ring: 0 0% 20%;
-    --tetris-glow: 0 0% 40%;
-    --board-empty: 0 0% 88%;
-  }
+html.theme-minimal {
+  --background: 0 0% 97%;
+  --foreground: 0 0% 15%;
+  --card: 0 0% 93%;
+  --card-foreground: 0 0% 15%;
+  --popover: 0 0% 93%;
+  --popover-foreground: 0 0% 15%;
+  --primary: 0 0% 20%;
+  --primary-foreground: 0 0% 97%;
+  --secondary: 0 0% 75%;
+  --secondary-foreground: 0 0% 15%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 50%;
+  --accent: 0 0% 35%;
+  --accent-foreground: 0 0% 97%;
+  --destructive: 0 60% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 82%;
+  --input: 0 0% 82%;
+  --ring: 0 0% 20%;
+  --tetris-glow: 0 0% 40%;
+  --board-empty: 0 0% 88%;
+}
 
-  /* Theme: Pastel / Kawaii */
-  .theme-pastel {
-    --background: 300 30% 95%;
-    --foreground: 280 20% 25%;
-    --card: 300 25% 90%;
-    --card-foreground: 280 20% 25%;
-    --popover: 300 25% 90%;
-    --popover-foreground: 280 20% 25%;
-    --primary: 330 60% 65%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 200 60% 70%;
-    --secondary-foreground: 200 30% 15%;
-    --muted: 300 20% 87%;
-    --muted-foreground: 280 15% 50%;
-    --accent: 160 50% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 55% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 300 20% 80%;
-    --input: 300 20% 80%;
-    --ring: 330 60% 65%;
-    --tetris-glow: 330 60% 65%;
-    --board-empty: 300 20% 88%;
-  }
+html.theme-pastel {
+  --background: 300 30% 95%;
+  --foreground: 280 20% 25%;
+  --card: 300 25% 90%;
+  --card-foreground: 280 20% 25%;
+  --popover: 300 25% 90%;
+  --popover-foreground: 280 20% 25%;
+  --primary: 330 60% 65%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 200 60% 70%;
+  --secondary-foreground: 200 30% 15%;
+  --muted: 300 20% 87%;
+  --muted-foreground: 280 15% 50%;
+  --accent: 160 50% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 55% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 300 20% 80%;
+  --input: 300 20% 80%;
+  --ring: 330 60% 65%;
+  --tetris-glow: 330 60% 65%;
+  --board-empty: 300 20% 88%;
+}
 
-  /* Difficulty-based themes (dark mode) */
-  .diff-easy {
-    --background: 145 30% 6%;
-    --card: 145 25% 10%;
-    --muted: 145 15% 16%;
-    --muted-foreground: 145 10% 50%;
-    --border: 145 15% 20%;
-    --input: 145 15% 20%;
-    --primary: 140 70% 45%;
-    --primary-foreground: 145 30% 6%;
-    --accent: 80 80% 50%;
-    --accent-foreground: 145 30% 6%;
-    --ring: 140 70% 45%;
-    --tetris-glow: 140 70% 45%;
-    --board-empty: 145 20% 8%;
-  }
+/* Difficulty-based themes */
+html.diff-easy {
+  --background: 145 30% 6%;
+  --card: 145 25% 10%;
+  --muted: 145 15% 16%;
+  --muted-foreground: 145 10% 50%;
+  --border: 145 15% 20%;
+  --input: 145 15% 20%;
+  --primary: 140 70% 45%;
+  --primary-foreground: 145 30% 6%;
+  --accent: 80 80% 50%;
+  --accent-foreground: 145 30% 6%;
+  --ring: 140 70% 45%;
+  --tetris-glow: 140 70% 45%;
+  --board-empty: 145 20% 8%;
+}
 
-  .diff-normal {
-    --background: 40 25% 7%;
-    --card: 40 20% 11%;
-    --muted: 40 15% 17%;
-    --muted-foreground: 40 10% 50%;
-    --border: 40 15% 21%;
-    --input: 40 15% 21%;
-    --primary: 45 85% 50%;
-    --primary-foreground: 40 25% 7%;
-    --accent: 35 100% 55%;
-    --accent-foreground: 40 25% 7%;
-    --ring: 45 85% 50%;
-    --tetris-glow: 45 85% 50%;
-    --board-empty: 40 20% 9%;
-  }
+html.diff-normal {
+  --background: 40 25% 7%;
+  --card: 40 20% 11%;
+  --muted: 40 15% 17%;
+  --muted-foreground: 40 10% 50%;
+  --border: 40 15% 21%;
+  --input: 40 15% 21%;
+  --primary: 45 85% 50%;
+  --primary-foreground: 40 25% 7%;
+  --accent: 35 100% 55%;
+  --accent-foreground: 40 25% 7%;
+  --ring: 45 85% 50%;
+  --tetris-glow: 45 85% 50%;
+  --board-empty: 40 20% 9%;
+}
 
-  .diff-hard {
-    --background: 0 30% 6%;
-    --card: 0 25% 10%;
-    --muted: 0 15% 16%;
-    --muted-foreground: 0 10% 50%;
-    --border: 0 20% 22%;
-    --input: 0 20% 22%;
-    --primary: 5 80% 50%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 25 100% 55%;
-    --accent-foreground: 0 30% 6%;
-    --ring: 5 80% 50%;
-    --tetris-glow: 5 80% 50%;
-    --board-empty: 0 15% 8%;
-  }
-
+html.diff-hard {
+  --background: 0 30% 6%;
+  --card: 0 25% 10%;
+  --muted: 0 15% 16%;
+  --muted-foreground: 0 10% 50%;
+  --border: 0 20% 22%;
+  --input: 0 20% 22%;
+  --primary: 5 80% 50%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 25 100% 55%;
+  --accent-foreground: 0 30% 6%;
+  --ring: 5 80% 50%;
+  --tetris-glow: 5 80% 50%;
+  --board-empty: 0 15% 8%;
 }
 
 @layer base {
