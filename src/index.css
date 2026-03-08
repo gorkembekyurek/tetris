@@ -39,6 +39,7 @@
 
     --font-display: 'Press Start 2P', monospace;
     --font-body: 'Inter', sans-serif;
+  }
 }
 
 /* Visual themes - outside @layer for higher specificity */
