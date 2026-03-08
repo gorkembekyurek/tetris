@@ -65,10 +65,19 @@ const TetrisGame = () => {
     <div className="flex flex-col items-center justify-center min-h-screen gap-4 select-none p-4"
          onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       
-      <h1 className="text-primary text-2xl md:text-3xl tracking-widest"
-          style={{ fontFamily: 'var(--font-display)' }}>
-        TETRIS
-      </h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-primary text-2xl md:text-3xl tracking-widest"
+            style={{ fontFamily: 'var(--font-display)' }}>
+          TETRIS
+        </h1>
+        <button
+          onClick={toggleMusic}
+          className="text-muted-foreground hover:text-foreground transition-colors text-lg"
+          title={musicOn ? 'Müziği kapat' : 'Müziği aç'}
+        >
+          {musicOn ? '🔊' : '🔇'}
+        </button>
+      </div>
 
       <div className="flex gap-4 md:gap-8 items-start">
         {/* Game Board */}
