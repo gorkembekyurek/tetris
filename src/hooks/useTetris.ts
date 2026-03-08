@@ -120,6 +120,7 @@ export function useTetris() {
     } else {
       setPiece(np);
       setNextPiece(randomPiece());
+      setCanHold(true);
     }
   }, [board, piece, nextPiece, lines, level]);
 
