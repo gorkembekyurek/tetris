@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { sounds } from '@/lib/sounds';
 
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
