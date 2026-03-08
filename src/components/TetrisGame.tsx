@@ -15,6 +15,7 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [ghostLevel, setGhostLevel] = useState<number>(() => {
     const saved = localStorage.getItem('tetris-ghost');
     return saved ? parseInt(saved) : 2;
@@ -48,6 +49,12 @@ const TetrisGame = () => {
       setMusicOn(false);
     }
   }, [gameOver]);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   // Render the display board with piece and ghost
   const displayBoard = board.map(row => [...row]);
@@ -119,6 +126,22 @@ const TetrisGame = () => {
           {['👻', '👻', '👻', '👻'][ghostLevel]}
           <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)', opacity: ghostLevel === 0 ? 0.3 : 1 }}>
             {['OFF', 'LO', 'MD', 'HI'][ghostLevel]}
+          </span>
+        </button>
+        <button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+            } else {
+              document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+            }
+          }}
+          className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg"
+          title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran'}
+        >
+          {isFullscreen ? '⛶' : '⛶'}
+          <span className="text-[8px] md:text-[10px] ml-0.5" style={{ fontFamily: 'var(--font-display)' }}>
+            {isFullscreen ? 'EXIT' : 'MAX'}
           </span>
         </button>
       </div>
