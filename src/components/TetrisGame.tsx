@@ -147,7 +147,7 @@ const TetrisGame = () => {
                     ? 'hsl(var(--primary))'
                     : cell === 'ghost'
                       ? `${piece.color}22`
-                      : cell || 'hsl(230, 20%, 10%)',
+                      : cell || 'hsl(var(--board-empty))',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
                     : cell && cell !== 'ghost'
