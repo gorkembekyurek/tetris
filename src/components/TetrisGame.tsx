@@ -206,7 +206,7 @@ const TetrisGame = () => {
             ))}
           </div>
 
-
+          <div className="flex-1" />
 
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
