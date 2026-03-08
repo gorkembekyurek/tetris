@@ -246,7 +246,7 @@ export function useTetris() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [started, move, moveDown, rotatePiece, hardDrop, togglePause]);
+  }, [started, move, moveDown, rotatePiece, hardDrop, togglePause, hold]);
 
   // Ghost piece
   const ghost = (() => {
