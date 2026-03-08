@@ -142,6 +142,14 @@ const COMBO_BONUS = 50; // per combo level
 
 let notifId = 0;
 
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+const DIFFICULTY_CONFIG: Record<Difficulty, { startLevel: number; baseSpeed: number; speedStep: number }> = {
+  easy:   { startLevel: 1, baseSpeed: 900, speedStep: 50 },
+  normal: { startLevel: 1, baseSpeed: 800, speedStep: 70 },
+  hard:   { startLevel: 5, baseSpeed: 500, speedStep: 80 },
+};
+
 export function useTetris() {
   const bagRef = useRef<string[]>(createBag());
   
