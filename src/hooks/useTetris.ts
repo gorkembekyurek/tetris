@@ -211,7 +211,7 @@ export function useTetris() {
     if (gameOver || paused || !canHold) return;
     setCanHold(false);
     if (holdPiece) {
-      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
+      const restored: Piece = { shape: holdPiece.shape, color: holdPiece.color, type: holdPiece.type, x: Math.floor((BOARD_WIDTH - holdPiece.shape[0].length) / 2), y: 0 };
       if (!collides(board, restored)) {
       setHoldPiece({ shape: piece.shape, color: piece.color, type: piece.type });
       setPiece(restored);
