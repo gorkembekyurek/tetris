@@ -148,6 +148,7 @@ export function useTetris() {
   const [clearingRows, setClearingRows] = useState<number[]>([]);
   const [combo, setCombo] = useState(-1); // -1 = no active combo
   const [notifications, setNotifications] = useState<ActionNotification[]>([]);
+  const [trail, setTrail] = useState<TrailCell[]>([]);
   const [highScores, setHighScores] = useState<{ score: number; date: string }[]>(() => {
     try { return JSON.parse(localStorage.getItem('tetris-highscores') || '[]'); } catch { return []; }
   });
