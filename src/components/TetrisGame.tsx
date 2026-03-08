@@ -8,9 +8,11 @@ const BOARD_HEIGHT = 20;
 const TetrisGame = () => {
   const {
     board, piece, ghost, nextPiece, score, lines, level,
-    gameOver, paused, started,
+    gameOver, paused, started, highScores,
     move, moveDown, rotatePiece, hardDrop, restart, start, togglePause,
   } = useTetris();
+
+  const [showScores, setShowScores] = useState(false);
 
   const touchRef = useRef<{ x: number; y: number } | null>(null);
 
