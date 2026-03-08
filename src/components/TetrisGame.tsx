@@ -299,7 +299,7 @@ const TetrisGame = () => {
                   </button>
                 </div>
               )}
-              {paused ? (
+              {!gameOver && paused && (
                 <div className="flex flex-col gap-2 items-center">
                   <button
                     onClick={togglePause}
@@ -323,7 +323,8 @@ const TetrisGame = () => {
                     MAIN MENU
                   </button>
                 </div>
-              ) : (
+              )}
+              {!gameOver && !paused && !started && (
                 <div className="flex flex-col gap-2 items-center">
                   <p className="text-muted-foreground text-[8px] md:text-[10px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
                     DIFFICULTY
