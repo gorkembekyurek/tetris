@@ -61,3 +61,37 @@
 .animate-line-clear {
   animation: line-clear 0.35s ease-out forwards;
 }
+
+/* Responsive board cells */
+.board-cell {
+  width: 28px;
+  height: 28px;
+  border: 1px solid hsl(var(--border) / 0.3);
+}
+
+.board-grid {
+  width: calc(28px * 10);
+  height: calc(28px * 20);
+}
+
+@media (max-width: 768px) {
+  .board-cell {
+    width: 22px;
+    height: 22px;
+  }
+  .board-grid {
+    width: calc(22px * 10);
+    height: calc(22px * 20);
+  }
+}
+
+@media (max-width: 400px) {
+  .board-cell {
+    width: 18px;
+    height: 18px;
+  }
+  .board-grid {
+    width: calc(18px * 10);
+    height: calc(18px * 20);
+  }
+}
