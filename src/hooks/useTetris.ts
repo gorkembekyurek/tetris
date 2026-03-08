@@ -143,9 +143,19 @@ const COMBO_BONUS = 50; // per combo level
 let notifId = 0;
 
 export function useTetris() {
+  const bagRef = useRef<string[]>(createBag());
+  
+  const drawPiece = useCallback((): Piece => {
+    if (bagRef.current.length === 0) {
+      bagRef.current = createBag();
+    }
+    const key = bagRef.current.pop()!;
+    return makePiece(key);
+  }, []);
+
   const [board, setBoard] = useState<Board>(createBoard);
-  const [piece, setPiece] = useState<Piece>(randomPiece);
-  const [nextPiece, setNextPiece] = useState<Piece>(randomPiece);
+  const [piece, setPiece] = useState<Piece>(() => drawPiece());
+  const [nextPiece, setNextPiece] = useState<Piece>(() => drawPiece());
   const [score, setScore] = useState(0);
   const [lines, setLines] = useState(0);
   const [level, setLevel] = useState(1);
