@@ -14,6 +14,18 @@ const TetrisGame = () => {
 
   const [showScores, setShowScores] = useState(false);
   const [musicOn, setMusicOn] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light');
+    localStorage.setItem('tetris-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  }, []);
 
   const toggleMusic = useCallback(() => {
     if (musicOn) {
