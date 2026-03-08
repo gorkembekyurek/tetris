@@ -430,6 +430,10 @@ export function useTetris() {
     if (!gameOver) setPaused(p => !p);
   }, [gameOver]);
 
+  // Use a ref for moveDown so the interval doesn't reset on every piece change
+  const moveDownRef = useRef(moveDown);
+  useEffect(() => { moveDownRef.current = moveDown; }, [moveDown]);
+
   // Game loop
   useEffect(() => {
     if (!started || gameOver || paused) {
@@ -438,9 +442,9 @@ export function useTetris() {
     }
     const config = DIFFICULTY_CONFIG[difficulty];
     const speed = Math.max(100, config.baseSpeed - (level - 1) * config.speedStep);
-    intervalRef.current = setInterval(moveDown, speed);
+    intervalRef.current = setInterval(() => moveDownRef.current(), speed);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [started, gameOver, paused, level, moveDown, difficulty]);
+  }, [started, gameOver, paused, level, difficulty]);
 
   // Keyboard
   useEffect(() => {
