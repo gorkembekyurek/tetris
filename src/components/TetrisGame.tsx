@@ -107,6 +107,21 @@ const TetrisGame = () => {
       {/* Main Game Area */}
       <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
         
+        {/* Desktop Left Panel - Keys */}
+        <div className="hidden md:flex flex-col gap-4 w-32">
+          <div className="bg-card rounded-lg p-3 border border-border">
+            <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
+            <div className="space-y-1 text-muted-foreground text-[10px]">
+              <p>← → Move</p>
+              <p>↑ Rotate</p>
+              <p>↓ Soft drop</p>
+              <p>Space Hard drop</p>
+              <p>C Hold</p>
+              <p>P Pause</p>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile: Hold + Stats left column */}
         <div className="flex flex-col gap-2 md:hidden w-16">
           <div className={`bg-card rounded-lg p-2 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
