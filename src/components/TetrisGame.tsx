@@ -20,12 +20,18 @@ const TetrisGame = () => {
     const saved = localStorage.getItem('tetris-ghost');
     return saved ? parseInt(saved) : 2;
   }); // 0=off, 1=low, 2=medium, 3=high
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    return (localStorage.getItem('tetris-theme') as 'dark' | 'light') || 'dark';
+  const THEMES = ['default', 'retro', 'neon', 'minimal', 'pastel'] as const;
+  type Theme = typeof THEMES[number];
+  const THEME_LABELS: Record<Theme, string> = { default: '🌑', retro: '🎮', neon: '💜', minimal: '⬜', pastel: '🌸' };
+  const THEME_NAMES: Record<Theme, string> = { default: 'Dark', retro: 'Retro', neon: 'Neon', minimal: 'Minimal', pastel: 'Pastel' };
+  const [theme, setTheme] = useState<Theme>(() => {
+    return (localStorage.getItem('tetris-theme') as Theme) || 'default';
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
+    const el = document.documentElement;
+    THEMES.forEach(t => el.classList.remove(`theme-${t}`));
+    if (theme !== 'default') el.classList.add(`theme-${theme}`);
     localStorage.setItem('tetris-theme', theme);
   }, [theme]);
 
