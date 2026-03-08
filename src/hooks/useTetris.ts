@@ -243,20 +243,21 @@ export function useTetris() {
       let bonusPoints = 0;
       const notifs: { text: string; points?: number }[] = [];
       
+      // Base line clear notification
+      const baseLinePts = POINTS[fullRows.length] * level;
+      const lineLabels = ['', 'SINGLE', 'DOUBLE', 'TRIPLE', 'TETRIS!'];
+      notifs.push({ text: lineLabels[fullRows.length], points: baseLinePts });
+      
       if (isTSpin) {
         const tspinPts = TSPIN_POINTS[fullRows.length] * level;
         bonusPoints += tspinPts;
-        notifs.push({ text: `T-SPIN ${fullRows.length > 0 ? (['', 'SINGLE', 'DOUBLE', 'TRIPLE'][fullRows.length]) : ''}`, points: tspinPts });
+        notifs.push({ text: `T-SPIN`, points: tspinPts });
       }
       
       if (newCombo > 0) {
         const comboPts = COMBO_BONUS * newCombo * level;
         bonusPoints += comboPts;
         notifs.push({ text: `COMBO x${newCombo + 1}`, points: comboPts });
-      }
-      
-      if (fullRows.length === 4) {
-        notifs.push({ text: 'TETRIS!' });
       }
       
       notifs.forEach(n => addNotification(n.text, n.points));
