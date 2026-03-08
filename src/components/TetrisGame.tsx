@@ -220,16 +220,18 @@ const TetrisGame = () => {
                     : trailCell && !cell
                       ? `${trailCell.color}40`
                       : cell === 'ghost'
-                        ? (ghostLevel === 0 ? 'hsl(var(--board-empty))' : `${piece.color}${['00','15','30','55'][ghostLevel]}`)
+                        ? (ghostLevel === 0 ? 'hsl(var(--board-empty))' : `${piece.color}${['00','18','35','70'][ghostLevel]}`)
                         : cell || 'hsl(var(--board-empty))',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
                     : trailCell && !cell
                       ? `0 0 8px ${trailCell.color}60`
-                      : cell && cell !== 'ghost'
-                        ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
-                        : 'none',
-                  borderColor: cell === 'ghost' && ghostLevel > 0 ? `${piece.color}${['00','22','44','66'][ghostLevel]}` : isClearing ? 'transparent' : undefined,
+                      : cell === 'ghost' && ghostLevel === 3
+                        ? `inset 0 0 6px ${piece.color}90, 0 0 4px ${piece.color}50`
+                        : cell && cell !== 'ghost'
+                          ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
+                          : 'none',
+                  borderColor: cell === 'ghost' && ghostLevel > 0 ? `${piece.color}${['00','30','55','99'][ghostLevel]}` : isClearing ? 'transparent' : undefined,
                   border: isClearing ? 'none' : undefined,
                 }} />
               );
