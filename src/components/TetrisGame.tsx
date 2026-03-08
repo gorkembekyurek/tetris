@@ -124,7 +124,7 @@ const TetrisGame = () => {
     <div className="flex flex-col items-center min-h-screen select-none">
       {/* Header - just TETRIS title */}
       <div className="py-3 md:py-4">
-        <h1 className="text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
+        <h1 className="text-lg md:text-4xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
           {'TETRIS'.split('').map((letter, i) => (
             <span key={i} className="inline-block animate-tetris-drop" style={{
               color: ['#FF0D72','#0DC2FF','#0DFF72','#F538FF','#FF8E0D','#FFE138'][i],
