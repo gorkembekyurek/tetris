@@ -2,7 +2,6 @@ import { useTetris } from '@/hooks/useTetris';
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { music } from '@/lib/sounds';
 
-const CELL_SIZE = 28;
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 
@@ -26,7 +25,6 @@ const TetrisGame = () => {
     }
   }, [musicOn]);
 
-  // Stop music on game over
   useEffect(() => {
     if (gameOver && musicOn) {
       music.stop();
@@ -34,34 +32,9 @@ const TetrisGame = () => {
     }
   }, [gameOver]);
 
-  const touchRef = useRef<{ x: number; y: number } | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchRef.current) return;
-    const dx = e.changedTouches[0].clientX - touchRef.current.x;
-    const dy = e.changedTouches[0].clientY - touchRef.current.y;
-    const absDx = Math.abs(dx), absDy = Math.abs(dy);
-    
-    if (absDx < 20 && absDy < 20) {
-      rotatePiece();
-    } else if (absDy > absDx && dy > 40) {
-      hardDrop();
-    } else if (absDx > absDy) {
-      move(dx > 0 ? 1 : -1);
-    } else if (dy > 0) {
-      moveDown();
-    }
-    touchRef.current = null;
-  };
-
   // Render the display board with piece and ghost
   const displayBoard = board.map(row => [...row]);
-  
-  // Draw ghost
+
   for (let r = 0; r < ghost.shape.length; r++) {
     for (let c = 0; c < ghost.shape[r].length; c++) {
       if (ghost.shape[r][c] && ghost.y + r >= 0 && ghost.y + r < BOARD_HEIGHT) {
@@ -72,7 +45,6 @@ const TetrisGame = () => {
     }
   }
 
-  // Draw piece
   for (let r = 0; r < piece.shape.length; r++) {
     for (let c = 0; c < piece.shape[r].length; c++) {
       if (piece.shape[r][c] && piece.y + r >= 0 && piece.y + r < BOARD_HEIGHT) {
@@ -81,77 +53,111 @@ const TetrisGame = () => {
     }
   }
 
+  const MiniPiece = ({ shape, color, cellSize = 14 }: { shape: number[][]; color: string; cellSize?: number }) => (
+    <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${shape[0].length}, ${cellSize}px)` }}>
+      {shape.flat().map((cell, i) => (
+        <div key={i} style={{
+          width: cellSize, height: cellSize,
+          background: cell ? color : 'transparent',
+          boxShadow: cell ? 'inset 1px 1px 3px rgba(255,255,255,0.2), inset -1px -1px 3px rgba(0,0,0,0.3)' : 'none',
+          borderRadius: 2,
+        }} />
+      ))}
+    </div>
+  );
+
+  const ControlButton = ({ onClick, children, className = '', wide = false }: {
+    onClick: () => void; children: React.ReactNode; className?: string; wide?: boolean;
+  }) => (
+    <button
+      onClick={onClick}
+      className={`bg-muted text-foreground rounded-xl font-bold active:bg-primary active:text-primary-foreground active:scale-95 transition-transform touch-manipulation ${wide ? 'flex-1 h-14' : 'w-16 h-16'} ${className}`}
+    >
+      {children}
+    </button>
+  );
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4 select-none p-4"
-         onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-      
-      <div className="flex items-center gap-4">
-        <h1 className="text-primary text-2xl md:text-3xl tracking-widest"
-            style={{ fontFamily: 'var(--font-display)' }}>
+    <div className="flex flex-col items-center min-h-screen select-none">
+      {/* Header */}
+      <div className="flex items-center gap-3 py-3 md:py-4">
+        <h1 className="text-primary text-lg md:text-3xl tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>
           TETRIS
         </h1>
-        <button
-          onClick={toggleMusic}
-          className="text-muted-foreground hover:text-foreground transition-colors text-lg"
-          title={musicOn ? 'Müziği kapat' : 'Müziği aç'}
-        >
+        <button onClick={toggleMusic} className="text-muted-foreground hover:text-foreground transition-colors text-base md:text-lg" title={musicOn ? 'Müziği kapat' : 'Müziği aç'}>
           {musicOn ? '🔊' : '🔇'}
         </button>
       </div>
 
-      <div className="flex gap-4 md:gap-8 items-start">
-        {/* Game Board */}
+      {/* Main Game Area */}
+      <div className="flex gap-2 md:gap-6 items-start flex-1 px-2 md:px-4">
+        
+        {/* Mobile: Hold + Stats left column */}
+        <div className="flex flex-col gap-2 md:hidden w-16">
+          <div className={`bg-card rounded-lg p-2 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
+            <p className="text-muted-foreground text-[7px] mb-1 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
+            <div className="flex justify-center h-8 items-center">
+              {holdPiece ? <MiniPiece shape={holdPiece.shape} color={holdPiece.color} cellSize={10} /> : <span className="text-muted-foreground text-[7px]">-</span>}
+            </div>
+          </div>
+          <div className="bg-card rounded-lg p-2 border border-border">
+            <p className="text-muted-foreground text-[7px] mb-1 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>NEXT</p>
+            <div className="flex justify-center h-8 items-center">
+              <MiniPiece shape={nextPiece.shape} color={nextPiece.color} cellSize={10} />
+            </div>
+          </div>
+          <div className="bg-card rounded-lg p-2 border border-border space-y-1">
+            {[['SCR', score], ['LN', lines], ['LV', level]].map(([l, v]) => (
+              <div key={l as string}>
+                <p className="text-muted-foreground text-[6px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{l}</p>
+                <p className="text-accent text-[10px] font-bold" style={{ fontFamily: 'var(--font-display)' }}>{v}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Game Board - responsive cell size */}
         <div className="relative rounded-lg overflow-hidden border-2 border-border"
-             style={{
-               width: CELL_SIZE * BOARD_WIDTH + 2,
-               height: CELL_SIZE * BOARD_HEIGHT + 2,
-               boxShadow: '0 0 40px hsl(var(--tetris-glow) / 0.15), inset 0 0 20px hsl(230 25% 4% / 0.5)',
-             }}>
-          <div className="grid" style={{
-            gridTemplateColumns: `repeat(${BOARD_WIDTH}, ${CELL_SIZE}px)`,
-            gridTemplateRows: `repeat(${BOARD_HEIGHT}, ${CELL_SIZE}px)`,
+             style={{ boxShadow: '0 0 40px hsl(var(--tetris-glow) / 0.15), inset 0 0 20px hsl(230 25% 4% / 0.5)' }}>
+          <div className="grid board-grid" style={{
+            gridTemplateColumns: `repeat(${BOARD_WIDTH}, 1fr)`,
+            gridTemplateRows: `repeat(${BOARD_HEIGHT}, 1fr)`,
           }}>
             {displayBoard.flat().map((cell, i) => {
               const row = Math.floor(i / BOARD_WIDTH);
               const isClearing = clearingRows.includes(row);
               return (
-                <div key={i} className={isClearing ? 'animate-line-clear' : ''} style={{
-                  width: CELL_SIZE,
-                  height: CELL_SIZE,
+                <div key={i} className={`board-cell ${isClearing ? 'animate-line-clear' : ''}`} style={{
                   background: isClearing
                     ? 'hsl(var(--primary))'
                     : cell === 'ghost'
                       ? `${piece.color}22`
-                      : cell
-                        ? cell
-                        : 'hsl(230, 20%, 10%)',
+                      : cell || 'hsl(230, 20%, 10%)',
                   boxShadow: isClearing
                     ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
                     : cell && cell !== 'ghost'
                       ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
                       : 'none',
                   borderColor: cell === 'ghost' ? `${piece.color}44` : isClearing ? 'transparent' : undefined,
-                  transition: isClearing ? 'none' : 'background 0.05s',
                   border: isClearing ? 'none' : undefined,
                 }} />
               );
             })}
           </div>
 
-          {/* Overlay for game over / start */}
           {(!started || gameOver || paused) && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm gap-4">
-              <p className="text-accent text-sm md:text-base" style={{ fontFamily: 'var(--font-display)' }}>
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm gap-3 md:gap-4">
+              <p className="text-accent text-xs md:text-base" style={{ fontFamily: 'var(--font-display)' }}>
                 {gameOver ? 'GAME OVER' : paused ? 'PAUSED' : 'TETRIS'}
               </p>
               {gameOver && (
-                <p className="text-muted-foreground text-xs" style={{ fontFamily: 'var(--font-display)' }}>
+                <p className="text-muted-foreground text-[10px] md:text-xs" style={{ fontFamily: 'var(--font-display)' }}>
                   SCORE: {score}
                 </p>
               )}
               <button
                 onClick={gameOver || !started ? restart : togglePause}
-                className="bg-primary text-primary-foreground px-6 py-2 rounded-md text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
+                className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-[10px] md:text-xs font-bold tracking-wider hover:opacity-90 transition-opacity"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {gameOver ? 'RESTART' : paused ? 'RESUME' : 'START'}
@@ -160,57 +166,24 @@ const TetrisGame = () => {
           )}
         </div>
 
-        {/* Side Panel */}
-        <div className="flex flex-col gap-4 w-28 md:w-32">
-          {/* Hold Piece */}
+        {/* Desktop Side Panel */}
+        <div className="hidden md:flex flex-col gap-4 w-32">
           <div className={`bg-card rounded-lg p-3 border ${canHold ? 'border-border' : 'border-muted/50 opacity-50'}`}>
             <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>HOLD</p>
             <div className="flex justify-center h-10 items-center">
-              {holdPiece ? (
-                <div className="grid gap-0" style={{
-                  gridTemplateColumns: `repeat(${holdPiece.shape[0].length}, 18px)`,
-                }}>
-                  {holdPiece.shape.flat().map((cell, i) => (
-                    <div key={i} style={{
-                      width: 18, height: 18,
-                      background: cell ? holdPiece.color : 'transparent',
-                      boxShadow: cell ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)' : 'none',
-                      borderRadius: 2,
-                    }} />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-[8px]">C tuşu</p>
-              )}
+              {holdPiece ? <MiniPiece shape={holdPiece.shape} color={holdPiece.color} cellSize={18} /> : <p className="text-muted-foreground text-[8px]">C tuşu</p>}
             </div>
           </div>
 
-          {/* Next Piece */}
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[9px] mb-2 tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>NEXT</p>
             <div className="flex justify-center">
-              <div className="grid gap-0" style={{
-                gridTemplateColumns: `repeat(${nextPiece.shape[0].length}, 18px)`,
-              }}>
-                {nextPiece.shape.flat().map((cell, i) => (
-                  <div key={i} style={{
-                    width: 18, height: 18,
-                    background: cell ? nextPiece.color : 'transparent',
-                    boxShadow: cell ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)' : 'none',
-                    borderRadius: 2,
-                  }} />
-                ))}
-              </div>
+              <MiniPiece shape={nextPiece.shape} color={nextPiece.color} cellSize={18} />
             </div>
           </div>
 
-          {/* Stats */}
           <div className="bg-card rounded-lg p-3 border border-border space-y-3">
-            {[
-              ['SCORE', score],
-              ['LINES', lines],
-              ['LEVEL', level],
-            ].map(([label, value]) => (
+            {[['SCORE', score], ['LINES', lines], ['LEVEL', level]].map(([label, value]) => (
               <div key={label as string}>
                 <p className="text-muted-foreground text-[9px] tracking-widest" style={{ fontFamily: 'var(--font-display)' }}>{label}</p>
                 <p className="text-accent text-sm font-bold" style={{ fontFamily: 'var(--font-display)' }}>{value}</p>
@@ -218,37 +191,25 @@ const TetrisGame = () => {
             ))}
           </div>
 
-          {/* High Scores */}
           <div className="bg-card rounded-lg p-3 border border-border">
-            <button
-              onClick={() => setShowScores(s => !s)}
-              className="text-muted-foreground text-[9px] tracking-widest w-full text-left hover:text-foreground transition-colors"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
+            <button onClick={() => setShowScores(s => !s)} className="text-muted-foreground text-[9px] tracking-widest w-full text-left hover:text-foreground transition-colors" style={{ fontFamily: 'var(--font-display)' }}>
               {showScores ? '▾ TOP 10' : '▸ TOP 10'}
             </button>
             {showScores && (
               <div className="mt-2 space-y-1">
                 {highScores.length === 0 ? (
                   <p className="text-muted-foreground text-[10px]">Henüz skor yok</p>
-                ) : (
-                  highScores.map((hs, i) => (
-                    <div key={i} className="flex justify-between items-center text-[10px]">
-                      <span className={i === 0 ? 'text-accent' : 'text-muted-foreground'}>
-                        {i + 1}.
-                      </span>
-                      <span className={i === 0 ? 'text-accent font-bold' : 'text-foreground'} style={{ fontFamily: 'var(--font-display)', fontSize: '9px' }}>
-                        {hs.score}
-                      </span>
-                      <span className="text-muted-foreground text-[8px]">{hs.date}</span>
-                    </div>
-                  ))
-                )}
+                ) : highScores.map((hs, i) => (
+                  <div key={i} className="flex justify-between items-center text-[10px]">
+                    <span className={i === 0 ? 'text-accent' : 'text-muted-foreground'}>{i + 1}.</span>
+                    <span className={i === 0 ? 'text-accent font-bold' : 'text-foreground'} style={{ fontFamily: 'var(--font-display)', fontSize: '9px' }}>{hs.score}</span>
+                    <span className="text-muted-foreground text-[8px]">{hs.date}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Controls */}
           <div className="bg-card rounded-lg p-3 border border-border">
             <p className="text-muted-foreground text-[8px] tracking-widest mb-2" style={{ fontFamily: 'var(--font-display)' }}>KEYS</p>
             <div className="space-y-1 text-muted-foreground text-[10px]">
@@ -260,22 +221,46 @@ const TetrisGame = () => {
               <p>P Pause</p>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Mobile Controls */}
-          <div className="flex flex-col gap-2 md:hidden">
-            <div className="flex justify-center gap-2">
-              <button onClick={rotatePiece} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">↻</button>
-              <button onClick={hold} className="bg-muted text-foreground w-12 h-12 rounded-lg text-[9px] font-bold active:bg-primary active:text-primary-foreground" style={{ fontFamily: 'var(--font-display)' }}>HOLD</button>
-            </div>
-            <div className="flex justify-center gap-2">
-              <button onClick={() => move(-1)} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">←</button>
-              <button onClick={moveDown} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">↓</button>
-              <button onClick={() => move(1)} className="bg-muted text-foreground w-12 h-12 rounded-lg text-lg font-bold active:bg-primary active:text-primary-foreground">→</button>
-            </div>
-            <div className="flex justify-center">
-              <button onClick={hardDrop} className="bg-accent text-accent-foreground w-full h-10 rounded-lg text-xs font-bold tracking-wider active:opacity-80" style={{ fontFamily: 'var(--font-display)' }}>DROP</button>
-            </div>
-          </div>
+      {/* Mobile Controls - Fixed at bottom */}
+      <div className="md:hidden w-full px-3 pb-3 pt-2 flex flex-col gap-2 max-w-sm mx-auto">
+        <div className="flex gap-2">
+          <ControlButton onClick={hold}>
+            <span className="text-[10px] tracking-wider" style={{ fontFamily: 'var(--font-display)' }}>HOLD</span>
+          </ControlButton>
+          <div className="flex-1" />
+          <ControlButton onClick={rotatePiece}>
+            <span className="text-2xl">↻</span>
+          </ControlButton>
+        </div>
+        <div className="flex gap-2 justify-center">
+          <ControlButton onClick={() => move(-1)}>
+            <span className="text-2xl">←</span>
+          </ControlButton>
+          <ControlButton onClick={moveDown}>
+            <span className="text-2xl">↓</span>
+          </ControlButton>
+          <ControlButton onClick={() => move(1)}>
+            <span className="text-2xl">→</span>
+          </ControlButton>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={hardDrop}
+            className="flex-1 h-14 bg-accent text-accent-foreground rounded-xl font-bold tracking-wider active:scale-95 transition-transform touch-manipulation text-xs"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            ⬇ DROP
+          </button>
+          <button
+            onClick={togglePause}
+            className="w-16 h-14 bg-muted text-foreground rounded-xl font-bold active:bg-secondary active:text-secondary-foreground active:scale-95 transition-transform touch-manipulation text-xs"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {paused ? '▶' : '⏸'}
+          </button>
         </div>
       </div>
     </div>
