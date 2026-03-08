@@ -144,6 +144,19 @@ const TetrisGame = () => {
               </div>
             ))}
           </div>
+          {started && (
+            <div className="bg-card rounded-lg p-2 border border-border">
+              <p className="text-muted-foreground text-[6px] tracking-widest mb-1" style={{ fontFamily: 'var(--font-display)' }}>STATS</p>
+              <div className="space-y-0.5">
+                {Object.entries(pieceStats).map(([key, count]) => (
+                  <div key={key} className="flex items-center gap-1">
+                    <MiniPiece shape={pieces[key].shape} color={pieces[key].color} cellSize={6} />
+                    <span className="text-foreground text-[8px] font-bold ml-auto" style={{ fontFamily: 'var(--font-display)' }}>{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Game Board - responsive cell size */}
