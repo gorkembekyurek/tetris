@@ -132,7 +132,9 @@ export function useTetris() {
       sounds.gameOver();
     } else {
       setPiece(np);
-      setNextPiece(randomPiece());
+      const newNext = randomPiece();
+      setNextPiece(newNext);
+      setPieceStats(s => ({ ...s, [np.type]: (s[np.type] || 0) + 1 }));
       setCanHold(true);
     }
   }, [nextPiece, lines, level, score, saveHighScore]);
