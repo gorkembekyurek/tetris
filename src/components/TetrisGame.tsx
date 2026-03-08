@@ -1,4 +1,5 @@
 import { useTetris } from '@/hooks/useTetris';
+import { useRef, useState } from 'react';
 import { useRef } from 'react';
 
 const CELL_SIZE = 28;
