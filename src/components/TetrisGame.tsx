@@ -82,21 +82,31 @@ const TetrisGame = () => {
             gridTemplateColumns: `repeat(${BOARD_WIDTH}, ${CELL_SIZE}px)`,
             gridTemplateRows: `repeat(${BOARD_HEIGHT}, ${CELL_SIZE}px)`,
           }}>
-            {displayBoard.flat().map((cell, i) => (
-              <div key={i} className="border border-border/30" style={{
-                width: CELL_SIZE,
-                height: CELL_SIZE,
-                background: cell === 'ghost'
-                  ? `${piece.color}22`
-                  : cell
-                    ? cell
-                    : 'hsl(230, 20%, 10%)',
-                boxShadow: cell && cell !== 'ghost'
-                  ? `inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)`
-                  : 'none',
-                borderColor: cell === 'ghost' ? `${piece.color}44` : undefined,
-              }} />
-            ))}
+            {displayBoard.flat().map((cell, i) => {
+              const row = Math.floor(i / BOARD_WIDTH);
+              const isClearing = clearingRows.includes(row);
+              return (
+                <div key={i} className={isClearing ? 'animate-line-clear' : ''} style={{
+                  width: CELL_SIZE,
+                  height: CELL_SIZE,
+                  background: isClearing
+                    ? 'hsl(var(--primary))'
+                    : cell === 'ghost'
+                      ? `${piece.color}22`
+                      : cell
+                        ? cell
+                        : 'hsl(230, 20%, 10%)',
+                  boxShadow: isClearing
+                    ? '0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary) / 0.5)'
+                    : cell && cell !== 'ghost'
+                      ? 'inset 2px 2px 4px rgba(255,255,255,0.2), inset -2px -2px 4px rgba(0,0,0,0.3)'
+                      : 'none',
+                  borderColor: cell === 'ghost' ? `${piece.color}44` : isClearing ? 'transparent' : undefined,
+                  transition: isClearing ? 'none' : 'background 0.05s',
+                  border: isClearing ? 'none' : undefined,
+                }} />
+              );
+            })}
           </div>
 
           {/* Overlay for game over / start */}
